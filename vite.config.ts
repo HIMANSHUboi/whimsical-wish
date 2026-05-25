@@ -15,7 +15,10 @@ export default defineConfig(async ({ command, mode }) => {
     tailwindcss(),
     tsconfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart({
-      server: { entry: "server" },
+      server: {
+        entry: "server",
+        preset: process.env.VERCEL ? "vercel" : undefined
+      },
       importProtection: {
         behavior: "error",
         client: {
@@ -40,7 +43,7 @@ export default defineConfig(async ({ command, mode }) => {
     }
   ];
 
-  if (command === "build") {
+  if (command === "build" && !process.env.VERCEL) {
     try {
       const { cloudflare } = await import("@cloudflare/vite-plugin");
       plugins.push(cloudflare({
