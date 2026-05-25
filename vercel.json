@@ -1,5 +1,10 @@
 {
   "version": 2,
+  "functions": {
+    "api/server.ts": {
+      "includeFiles": "dist/server/**"
+    }
+  },
   "rewrites": [
     {
       "source": "/((?!assets/|.*\\..*$).*)",
