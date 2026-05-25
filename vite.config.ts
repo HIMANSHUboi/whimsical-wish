@@ -61,7 +61,8 @@ export default defineConfig(async ({ command, mode }) => {
         build: {
           rollupOptions: {
             output: {
-              inlineDynamicImports: true
+              inlineDynamicImports: true,
+              entryFileNames: "server.js"
             }
           }
         }

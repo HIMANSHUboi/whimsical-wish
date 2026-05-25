@@ -5,7 +5,7 @@ import path from "path";
 
 // Resolve the server entry dynamically relative to the runtime process directory
 const serverPromise = import(
-  pathToFileURL(path.join(process.cwd(), "dist/server/index.js")).href
+  pathToFileURL(path.join(process.cwd(), "dist/server/server.js")).href
 ).then((m) => m.default || m);
 
 function toWebRequest(req: IncomingMessage): Request {
