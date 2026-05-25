@@ -4,6 +4,7 @@ import { Sparkles } from "@/components/Sparkles";
 import { Reveal } from "@/components/Reveal";
 import { ParallaxTilt } from "@/components/ParallaxTilt";
 import usRide from "@/assets/us-ride.png";
+import vanyaGreenShirt from "@/assets/vanya-green-shirt.png";
 import { LightboxImage } from "@/components/Lightbox";
 
 export const Route = createFileRoute("/wishes")({
@@ -82,22 +83,41 @@ function Wishes() {
           </Reveal>
         ) : (
           <>
-            {/* Polaroid of us */}
-            <Reveal variant="float-in" delay={150} className="flex justify-center">
+            {/* Polaroid photos */}
+            <Reveal variant="float-in" delay={150} className="flex flex-col sm:flex-row gap-8 justify-center items-center">
+              {/* Photo 1: Vanya & Himanshu (Green Shirt) */}
               <ParallaxTilt max={9}>
-                <figure className="bg-card p-3 pb-12 rounded-md shadow-soft -rotate-3 hover:rotate-0 transition-transform duration-500 max-w-xs relative group">
+                <figure className="bg-card p-3 pb-12 rounded-md shadow-soft -rotate-3 hover:rotate-0 transition-transform duration-500 max-w-[240px] relative group">
+                  <div className="overflow-hidden rounded-sm">
+                    <LightboxImage
+                      src={vanyaGreenShirt}
+                      alt="Vanya and Himanshu"
+                      className="w-full h-auto object-cover aspect-[3/4] transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-3 animate-shimmer pointer-events-none opacity-60" />
+                  </div>
+                  <figcaption className="absolute bottom-2 left-0 right-0 text-center font-script text-2xl text-twilight">
+                    sweet moments ♡
+                  </figcaption>
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-4 bg-gold/40 rounded-sm rotate-2 shadow-soft" />
+                </figure>
+              </ParallaxTilt>
+
+              {/* Photo 2: Us Ride */}
+              <ParallaxTilt max={9}>
+                <figure className="bg-card p-3 pb-12 rounded-md shadow-soft rotate-3 hover:rotate-0 transition-transform duration-500 max-w-[240px] relative group">
                   <div className="overflow-hidden rounded-sm">
                     <LightboxImage
                       src={usRide}
-                      alt="Vanya and me on a Royal Enfield kasauli ride"
-                      className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
+                      alt="Vanya and Himanshu on ride"
+                      className="w-full h-auto object-cover aspect-[3/4] transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-3 animate-shimmer pointer-events-none opacity-60" />
                   </div>
                   <figcaption className="absolute bottom-2 left-0 right-0 text-center font-script text-2xl text-twilight">
                     us ✦ forever
                   </figcaption>
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-4 bg-gold/40 rounded-sm rotate-2 shadow-soft" />
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-4 bg-gold/40 rounded-sm -rotate-2 shadow-soft" />
                 </figure>
               </ParallaxTilt>
             </Reveal>

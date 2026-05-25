@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { Sparkles } from "@/components/Sparkles";
 import { Reveal } from "@/components/Reveal";
@@ -23,6 +24,7 @@ interface WishEntry {
 }
 
 const STORAGE_KEY = "vanya-wishbook-v1";
+const APP_KEY = "lfeiwes4";
 const COLORS = [
   "bg-rose-50 dark:bg-rose-950/40",
   "bg-purple-50 dark:bg-purple-950/40",
@@ -32,22 +34,121 @@ const COLORS = [
   "bg-pink-50 dark:bg-pink-950/40",
 ];
 
+// Server functions to read/write to the free cloud database
+export const getWishesServer = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    const listRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${APP_KEY}/vanya_wish_ids`);
+    const listText = await listRes.json();
+    if (!listText) return [];
+    const ids: string[] = JSON.parse(listText);
+
+    const fetchPromises = ids.map(async (id) => {
+      try {
+        const wishRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${APP_KEY}/vanya_wish_${id}`);
+        const wishText = await wishRes.json();
+        if (wishText) {
+          return JSON.parse(wishText) as WishEntry;
+        }
+      } catch (err) {
+        console.error(`Error fetching wish ${id}:`, err);
+      }
+      return null;
+    });
+
+    const results = await Promise.all(fetchPromises);
+    return results.filter((w): w is WishEntry => w !== null).sort((a, b) => b.createdAt - a.createdAt);
+  } catch (err) {
+    console.error("Error in getWishesServer:", err);
+    return [];
+  }
+});
+
+export const addWishServer = createServerFn({ method: "POST" })
+  .validator((d: WishEntry) => d)
+  .handler(async ({ data: entry }) => {
+    try {
+      const wishVal = JSON.stringify(entry);
+      await fetch(
+        `https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${APP_KEY}/vanya_wish_${entry.id}/${encodeURIComponent(wishVal)}`,
+        { method: "POST" }
+      );
+
+      const listRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${APP_KEY}/vanya_wish_ids`);
+      const listText = await listRes.json();
+      let ids: string[] = [];
+      if (listText) {
+        try {
+          ids = JSON.parse(listText);
+        } catch {}
+      }
+      ids = [entry.id, ...ids].slice(0, 80);
+
+      const idsVal = JSON.stringify(ids);
+      await fetch(
+        `https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${APP_KEY}/vanya_wish_ids/${encodeURIComponent(idsVal)}`,
+        { method: "POST" }
+      );
+
+      return { success: true };
+    } catch (err) {
+      console.error("Error in addWishServer:", err);
+      return { success: false };
+    }
+  });
+
+export const removeWishServer = createServerFn({ method: "POST" })
+  .validator((id: string) => id)
+  .handler(async ({ data: id }) => {
+    try {
+      const listRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${APP_KEY}/vanya_wish_ids`);
+      const listText = await listRes.json();
+      if (listText) {
+        let ids: string[] = JSON.parse(listText);
+        ids = ids.filter((currId) => currId !== id);
+        const idsVal = JSON.stringify(ids);
+        await fetch(
+          `https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${APP_KEY}/vanya_wish_ids/${encodeURIComponent(idsVal)}`,
+          { method: "POST" }
+        );
+      }
+      await fetch(
+        `https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${APP_KEY}/vanya_wish_${id}/`,
+        { method: "POST" }
+      );
+      return { success: true };
+    } catch (err) {
+      console.error("Error in removeWishServer:", err);
+      return { success: false };
+    }
+  });
+
 function Wishbook() {
   const [wishes, setWishes] = useState<WishEntry[]>([]);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // 1. Load from localStorage for immediate display
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setWishes(JSON.parse(raw));
+      if (raw) {
+        setWishes(JSON.parse(raw));
+        setLoading(false);
+      }
     } catch {}
-  }, []);
 
-  const persist = (next: WishEntry[]) => {
-    setWishes(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
-  };
+    // 2. Fetch fresh database list in background
+    getWishesServer()
+      .then((serverWishes) => {
+        if (serverWishes) {
+          setWishes(serverWishes);
+          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(serverWishes)); } catch {}
+        }
+      })
+      .catch((err) => console.error("Error fetching db wishes:", err))
+      .finally(() => setLoading(false));
+  }, []);
 
   const addWish = () => {
     if (!name.trim() || !message.trim()) return;
@@ -59,7 +160,15 @@ function Wishbook() {
       tilt: Math.round((Math.random() - 0.5) * 5),
       createdAt: Date.now(),
     };
-    persist([entry, ...wishes]);
+
+    // Optimistic local update
+    const next = [entry, ...wishes];
+    setWishes(next);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
+
+    // Save to server database in background
+    addWishServer(entry).catch((err) => console.error("Error saving wish:", err));
+
     setName("");
     setMessage("");
     if (typeof window !== "undefined") {
@@ -68,7 +177,13 @@ function Wishbook() {
   };
 
   const removeWish = (id: string) => {
-    persist(wishes.filter((w) => w.id !== id));
+    // Optimistic local update
+    const next = wishes.filter((w) => w.id !== id);
+    setWishes(next);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
+
+    // Delete on server database in background
+    removeWishServer(id).catch((err) => console.error("Error deleting wish:", err));
   };
 
   return (

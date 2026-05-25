@@ -9,6 +9,7 @@ import fairyHero from "@/assets/fairy-hero.jpeg";
 import starSparkle from "@/assets/star-sparkle.png";
 import loversTarot from "@/assets/lovers-tarot.jpeg";
 import tarotParchment from "@/assets/tarot-parchment.jpeg";
+import vanyaFriends from "@/assets/vanya-friends.png";
 
 export const Route = createFileRoute("/moodboard")({
   head: () => ({
@@ -33,6 +34,7 @@ type Pin = {
 };
 
 const seedPins: Pin[] = [
+  { kind: "img", src: vanyaFriends, alt: "favorite humans ✦", tilt: -1 },
   { kind: "img", src: loversTarot, alt: "The Lovers tarot card", tilt: -2, tall: true },
   { kind: "quote", text: "she's made of moonlight and matcha foam", tilt: 1 },
   { kind: "img", src: starSparkle, alt: "Eight-pointed star", tilt: 3, bg: "bg-card" },
