@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { Readable } from "stream";
-import server from "../dist/server/server.js";
+import server from "../dist/server/index.js";
 
 function toWebRequest(req: IncomingMessage): Request {
   const protocol = req.headers["x-forwarded-proto"] || "http";
