@@ -64,9 +64,9 @@ export const getWishesServer = createServerFn({ method: "GET" }).handler(async (
 });
 
 export const addWishServer = createServerFn({ method: "POST" })
-  .validator((d: WishEntry) => d)
-  .handler(async ({ data: entry }) => {
+  .handler(async ({ data }: { data: WishEntry }) => {
     try {
+      const entry = data;
       const wishVal = JSON.stringify(entry);
       await fetch(
         `https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${APP_KEY}/vanya_wish_${entry.id}/${encodeURIComponent(wishVal)}`,
@@ -97,9 +97,9 @@ export const addWishServer = createServerFn({ method: "POST" })
   });
 
 export const removeWishServer = createServerFn({ method: "POST" })
-  .validator((id: string) => id)
-  .handler(async ({ data: id }) => {
+  .handler(async ({ data }: { data: string }) => {
     try {
+      const id = data;
       const listRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${APP_KEY}/vanya_wish_ids`);
       const listText = await listRes.json();
       if (listText) {
