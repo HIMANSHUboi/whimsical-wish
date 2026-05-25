@@ -56,6 +56,17 @@ export default defineConfig(async ({ command, mode }) => {
 
   return {
     define: envDefine,
+    environments: {
+      ssr: {
+        build: {
+          rollupOptions: {
+            output: {
+              inlineDynamicImports: true
+            }
+          }
+        }
+      }
+    },
     resolve: {
       alias: {
         "@": `${process.cwd()}/src`
