@@ -1,12 +1,9 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { Readable } from "stream";
-import { pathToFileURL } from "url";
-import path from "path";
+// @ts-ignore
+import * as serverModule from "../dist/server/server.js";
 
-// Resolve the server entry dynamically relative to the runtime process directory
-const serverPromise = import(
-  pathToFileURL(path.join(process.cwd(), "dist/server/server.js")).href
-).then((m) => m.default || m);
+const server = (serverModule as any).default || serverModule;
 
 function toWebRequest(req: IncomingMessage): Request {
   const protocol = req.headers["x-forwarded-proto"] || "http";
@@ -58,7 +55,6 @@ async function sendWebResponse(res: ServerResponse, response: Response) {
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {
-    const server = await serverPromise;
     const webRequest = toWebRequest(req);
     const webResponse = await server.fetch(webRequest, {}, {});
     await sendWebResponse(res, webResponse);
