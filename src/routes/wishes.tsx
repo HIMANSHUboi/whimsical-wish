@@ -43,7 +43,7 @@ function Wishes() {
         <Reveal className="text-center space-y-3">
           <p className="font-script text-3xl text-primary">a letter, just for you</p>
           <h1 className="font-display text-5xl md:text-6xl text-twilight text-balance">
-            Happy Birthday, my Vanya ♡
+            Happiest Birthday, Vanya ♡
           </h1>
         </Reveal>
 
@@ -129,12 +129,14 @@ function Wishes() {
                 </span>
                 <p className="font-script text-3xl text-primary">dear Vanya,</p>
                 <p className="text-lg leading-relaxed text-foreground/80">
-                  I wanted to make you something soft something that feels a little
-                  like you. A page that smells faintly of matcha, glitters at the
-                  edges, and hides a tarot card or two between its folds.
+                  The day finally is here we all have been waiting for this very special day 
+                  your presence in my life is a gift that i will cherish forever everytime we
+                  met was really special to me. I really want to thank you for being with me 
+                  when i was not having a good time. Everytime you pulled cards for me brought 
+                  blessings in my life. You have capability to understand your close ones deeply.
                 </p>
                 <p className="text-lg leading-relaxed text-foreground/80">
-                  Watching you turn another year is one of my favourite things. You
+                  Watching you turn 22 is one of my favourite things. You
                   carry the world so gently with your lavender playlists, your
                   little tea rituals, your Pinterest boards full of dreams. I hope
                   this year is kinder than the last, and louder in all the good ways.
@@ -142,10 +144,12 @@ function Wishes() {
                 <p className="text-lg leading-relaxed text-foreground/80">
                   May every cup you brew taste like a tiny celebration. May every card
                   you pull whisper something hopeful. May your sixteenth of June feel
-                  exactly the way you deserve warm, golden, and entirely yours.
+                  exactly the way you deserve warm, golden, and entirely yours. All i 
+                  want you to know is anything that brings you down was never meant for 
+                  you May your life be filled with all the happiness in the world 💖
                 </p>
                 <p className="font-display italic text-2xl text-twilight pt-2 text-balance">
-                  "Here's to you, the softest kind of magic I know."
+                  "Here's to 22 the softest kind of magic I know."
                 </p>
                 <div className="pt-4">
                   <p className="font-script text-3xl text-primary">always yours,</p>

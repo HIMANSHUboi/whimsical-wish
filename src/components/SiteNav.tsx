@@ -7,6 +7,7 @@ const links = [
   { to: "/about", label: "About" },
   { to: "/matcha", label: "Matcha" },
   { to: "/tarot", label: "Tarot" },
+  { to: "/starmap", label: "Star Map" },
   { to: "/moodboard", label: "Moodboard" },
   { to: "/wishbook", label: "Wishbook" },
   { to: "/calendar", label: "The Day" },

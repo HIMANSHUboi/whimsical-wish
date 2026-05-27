@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WishesRouteImport } from './routes/wishes'
 import { Route as WishbookRouteImport } from './routes/wishbook'
 import { Route as TarotRouteImport } from './routes/tarot'
+import { Route as StarmapRouteImport } from './routes/starmap'
 import { Route as MoodboardRouteImport } from './routes/moodboard'
 import { Route as MatchaRouteImport } from './routes/matcha'
 import { Route as CalendarRouteImport } from './routes/calendar'
@@ -31,6 +32,11 @@ const WishbookRoute = WishbookRouteImport.update({
 const TarotRoute = TarotRouteImport.update({
   id: '/tarot',
   path: '/tarot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StarmapRoute = StarmapRouteImport.update({
+  id: '/starmap',
+  path: '/starmap',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MoodboardRoute = MoodboardRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/calendar': typeof CalendarRoute
   '/matcha': typeof MatchaRoute
   '/moodboard': typeof MoodboardRoute
+  '/starmap': typeof StarmapRoute
   '/tarot': typeof TarotRoute
   '/wishbook': typeof WishbookRoute
   '/wishes': typeof WishesRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/calendar': typeof CalendarRoute
   '/matcha': typeof MatchaRoute
   '/moodboard': typeof MoodboardRoute
+  '/starmap': typeof StarmapRoute
   '/tarot': typeof TarotRoute
   '/wishbook': typeof WishbookRoute
   '/wishes': typeof WishesRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/calendar': typeof CalendarRoute
   '/matcha': typeof MatchaRoute
   '/moodboard': typeof MoodboardRoute
+  '/starmap': typeof StarmapRoute
   '/tarot': typeof TarotRoute
   '/wishbook': typeof WishbookRoute
   '/wishes': typeof WishesRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/matcha'
     | '/moodboard'
+    | '/starmap'
     | '/tarot'
     | '/wishbook'
     | '/wishes'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/matcha'
     | '/moodboard'
+    | '/starmap'
     | '/tarot'
     | '/wishbook'
     | '/wishes'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/matcha'
     | '/moodboard'
+    | '/starmap'
     | '/tarot'
     | '/wishbook'
     | '/wishes'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   CalendarRoute: typeof CalendarRoute
   MatchaRoute: typeof MatchaRoute
   MoodboardRoute: typeof MoodboardRoute
+  StarmapRoute: typeof StarmapRoute
   TarotRoute: typeof TarotRoute
   WishbookRoute: typeof WishbookRoute
   WishesRoute: typeof WishesRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/tarot'
       fullPath: '/tarot'
       preLoaderRoute: typeof TarotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/starmap': {
+      id: '/starmap'
+      path: '/starmap'
+      fullPath: '/starmap'
+      preLoaderRoute: typeof StarmapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/moodboard': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   CalendarRoute: CalendarRoute,
   MatchaRoute: MatchaRoute,
   MoodboardRoute: MoodboardRoute,
+  StarmapRoute: StarmapRoute,
   TarotRoute: TarotRoute,
   WishbookRoute: WishbookRoute,
   WishesRoute: WishesRoute,

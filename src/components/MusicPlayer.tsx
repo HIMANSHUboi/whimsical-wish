@@ -5,11 +5,13 @@ import { Play, Pause, Volume2, VolumeX, Sliders, X, Sparkles } from "lucide-reac
 import kissOfLifeUrl from "@/assets/kiss of life.mp3";
 // @ts-ignore
 import reflectionsUrl from "@/assets/reflections.mp3";
+// @ts-ignore
+import thoseEyesUrl from "@/assets/those eyes.mp3";
 
 const STORAGE_KEY_VIBE = "vanya-music-vibe";
 const STORAGE_KEY_VOL = "vanya-music-volume";
 
-type VibeType = "chimes" | "musicbox" | "cosmic" | "forest" | "sade" | "reflections";
+type VibeType = "chimes" | "forest" | "sade" | "reflections" | "those-eyes";
 
 interface VibeController {
   stop: () => void;
@@ -17,17 +19,16 @@ interface VibeController {
 
 const VIBES = [
   { id: "chimes", name: "Dreamy Chimes", emoji: "🌌" },
-  { id: "musicbox", name: "Music Box", emoji: "🧸" },
-  { id: "cosmic", name: "Cosmic Lullaby", emoji: "🪐" },
   { id: "forest", name: "Enchanted Forest", emoji: "🧚" },
   { id: "sade", name: "Kiss of Life", emoji: "🎷" },
   { id: "reflections", name: "Reflections", emoji: "✨" },
+  { id: "those-eyes", name: "Those Eyes", emoji: "👁️" },
 ];
 
 /**
  * Creates a synthesized background track using Web Audio API for the procedural vibes
  */
-function playSynthVibe(ctx: AudioContext, destination: AudioNode, vibe: Exclude<VibeType, "sade" | "reflections">): VibeController {
+function playSynthVibe(ctx: AudioContext, destination: AudioNode, vibe: Exclude<VibeType, "sade" | "reflections" | "those-eyes">): VibeController {
   const intervals: ReturnType<typeof setInterval>[] = [];
   const activeGains: GainNode[] = [];
 
@@ -106,114 +107,6 @@ function playSynthVibe(ctx: AudioContext, destination: AudioNode, vibe: Exclude<
         } catch {}
       },
     };
-  } else if (vibe === "musicbox") {
-    // Delay feedback loop for resonance
-    const delay = ctx.createDelay();
-    delay.delayTime.value = 0.35;
-    const feedback = ctx.createGain();
-    feedback.gain.value = 0.3;
-
-    delay.connect(feedback);
-    feedback.connect(delay);
-    delay.connect(destination);
-
-    const notes = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66, 1318.51];
-
-    const trigger = () => {
-      const note = notes[Math.floor(Math.random() * notes.length)];
-      if (ctx.state === "closed") return;
-
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "triangle";
-      osc.frequency.value = note;
-
-      gain.gain.setValueAtTime(0, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.2);
-
-      osc.connect(gain);
-      gain.connect(destination);
-      gain.connect(delay);
-
-      registerGain(gain);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 1.4);
-    };
-
-    trigger();
-    const interval = setInterval(trigger, 850);
-    intervals.push(interval);
-
-    return {
-      stop: () => {
-        intervals.forEach(clearInterval);
-        activeGains.forEach((g) => {
-          try {
-            g.gain.cancelScheduledValues(ctx.currentTime);
-            g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.2);
-          } catch {}
-        });
-      },
-    };
-  } else if (vibe === "cosmic") {
-    // Slow space sweeps & low detuned pads
-    const pad1 = ctx.createOscillator();
-    const pad2 = ctx.createOscillator();
-    const padGain1 = ctx.createGain();
-    const padGain2 = ctx.createGain();
-
-    pad1.type = "triangle";
-    pad1.frequency.value = 130.81; // C3
-    pad2.type = "sine";
-    pad2.frequency.value = 131.2; // slightly detuned C3
-
-    padGain1.gain.setValueAtTime(0, ctx.currentTime);
-    padGain1.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 2.5);
-    padGain2.gain.setValueAtTime(0, ctx.currentTime);
-    padGain2.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 2.5);
-
-    const filter = ctx.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.value = 280;
-
-    pad1.connect(padGain1);
-    pad2.connect(padGain2);
-    padGain1.connect(filter);
-    padGain2.connect(filter);
-    filter.connect(destination);
-
-    registerGain(padGain1);
-    registerGain(padGain2);
-
-    pad1.start(ctx.currentTime);
-    pad2.start(ctx.currentTime);
-
-    const notes = [130.81, 164.81, 196.0, 246.94, 261.63, 329.63, 392.0, 493.88];
-    const trigger = () => {
-      const note = notes[Math.floor(Math.random() * notes.length)];
-      playNote(note, "triangle", 1.2, 0.5, 0.6, 2.5, 0.12);
-    };
-
-    trigger();
-    const interval = setInterval(trigger, 3200);
-    intervals.push(interval);
-
-    return {
-      stop: () => {
-        intervals.forEach(clearInterval);
-        activeGains.forEach((g) => {
-          try {
-            g.gain.cancelScheduledValues(ctx.currentTime);
-            g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
-          } catch {}
-        });
-        try {
-          pad1.stop(ctx.currentTime + 0.6);
-          pad2.stop(ctx.currentTime + 0.6);
-        } catch {}
-      },
-    };
   } else {
     // forest
     const padOsc = ctx.createOscillator();
@@ -282,7 +175,7 @@ export function MusicPlayer() {
     if (typeof window === "undefined") return;
 
     const savedVibe = localStorage.getItem(STORAGE_KEY_VIBE) as VibeType;
-    if (savedVibe && ["chimes", "musicbox", "cosmic", "forest", "sade", "reflections"].includes(savedVibe)) {
+    if (savedVibe && ["chimes", "forest", "sade", "reflections", "those-eyes"].includes(savedVibe)) {
       setVibe(savedVibe);
     }
 
@@ -311,8 +204,8 @@ export function MusicPlayer() {
   const startPlaying = (selectedVibe: VibeType, targetVolume: number) => {
     stopPlaying();
 
-    if (selectedVibe === "sade" || selectedVibe === "reflections") {
-      const url = selectedVibe === "sade" ? kissOfLifeUrl : reflectionsUrl;
+    if (selectedVibe === "sade" || selectedVibe === "reflections" || selectedVibe === "those-eyes") {
+      const url = selectedVibe === "sade" ? kissOfLifeUrl : selectedVibe === "reflections" ? reflectionsUrl : thoseEyesUrl;
       const audio = new Audio(url);
       audio.loop = true;
       // Scale standard volume. Max 100% maps to gain value of 0.8 to avoid distortion

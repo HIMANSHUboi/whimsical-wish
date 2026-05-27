@@ -33,7 +33,7 @@ function CalendarPage() {
             June 2026
           </h1>
           <p className="text-muted-foreground">
-            One day painted gold among thirty.
+            The day Vanya turns 22 — one day painted gold among thirty.
           </p>
         </Reveal>
 
@@ -74,7 +74,7 @@ function CalendarPage() {
         <Reveal className="text-center space-y-2">
           <p className="font-script text-4xl text-primary">16 · 06 · 2026</p>
           <p className="text-muted-foreground italic">
-            the day the world got a little softer
+            the day the world got a little softer — 22 years ago, she arrived
           </p>
         </Reveal>
       </div>

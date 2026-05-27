@@ -141,6 +141,12 @@ function Index() {
                 emoji: "❀",
               },
               {
+                to: "/starmap",
+                title: "Star Map",
+                desc: "The sky on the night you were born.",
+                emoji: "🌠",
+              },
+              {
                 to: "/wishes",
                 title: "A Wish",
                 desc: "A small letter, just for you.",
