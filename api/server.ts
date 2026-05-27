@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from "http";
 import { Readable } from "stream";
 import { pathToFileURL } from "url";
 import path from "path";
+import fs from "fs";
 
 let server: any = null;
 let initError: any = null;
@@ -70,37 +71,6 @@ async function sendWebResponse(res: ServerResponse, response: Response) {
   res.end();
 }
 
-function renderErrorPage(): string {
-  return `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>This page didn't load</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      body { font: 15px/1.5 system-ui, -apple-system, sans-serif; background: #fafafa; color: #111; display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1.5rem; }
-      .card { max-width: 28rem; width: 100%; text-align: center; padding: 2rem; }
-      h1 { font-size: 1.25rem; margin: 0 0 0.5rem; }
-      p { color: #4b5563; margin: 0 0 1.5rem; }
-      .actions { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
-      a, button { padding: 0.5rem 1rem; border-radius: 0.375rem; font: inherit; cursor: pointer; text-decoration: none; border: 1px solid transparent; }
-      .primary { background: #111; color: #fff; }
-      .secondary { background: #fff; color: #111; border-color: #d1d5db; }
-    </style>
-  </head>
-  <body>
-    <div class="card">
-      <h1>This page didn't load</h1>
-      <p>Something went wrong on our end. You can try refreshing or head back home.</p>
-      <div class="actions">
-        <button class="primary" onclick="location.reload()">Try again</button>
-        <a class="secondary" href="/">Go home</a>
-      </div>
-    </div>
-  </body>
-</html>`;
-}
-
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {
     const srv = await initServer();
@@ -111,6 +81,27 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     console.error("Error in serverless handler:", error);
     res.statusCode = 500;
     res.setHeader("Content-Type", "text/html; charset=utf-8");
-    res.end(renderErrorPage());
+    
+    // Detailed error trace for debugging
+    const errorDetails = error ? (error.stack || error.message || String(error)) : "Unknown error";
+    res.end(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Application Error</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding: 2rem; background: #fafafa; color: #333; }
+            .card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 2rem; max-width: 800px; margin: 0 auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+            pre { background: #f7fafc; border: 1px solid #edf2f7; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.875rem; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <h1>Serverless Function Error (Diagnostics)</h1>
+            <pre><code>${errorDetails}</code></pre>
+          </div>
+        </body>
+      </html>
+    `);
   }
 }
