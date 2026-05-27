@@ -1,26 +1,6 @@
 {
   "version": 2,
-  "functions": {
-    "api/server.ts": {
-      "includeFiles": "dist/**",
-      "maxDuration": 30
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/((?!_assets/|assets/|favicon.*|.*\\..*$).*)",
-      "destination": "/api/server"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    }
-  ]
+  "buildCommand": "npm run build",
+  "outputDirectory": ".vercel/output",
+  "framework": null
 }

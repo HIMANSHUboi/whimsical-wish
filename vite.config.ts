@@ -13,21 +13,33 @@ export default defineConfig(async ({ command, mode }) => {
 
   const isVercel = !!process.env.VERCEL;
 
+  // Build the tanstackStart options — preset:vercel on Vercel CI
+  // suppress the TS error with a cast since the type defs lag behind the runtime API
+  const startOptions: Parameters<typeof tanstackStart>[0] = {
+    importProtection: {
+      behavior: "error",
+      client: {
+        files: ["**/server/**"],
+        specifiers: ["server-only"],
+      },
+    },
+    ...(isVercel
+      ? {
+          server: {
+            preset: "vercel",
+          } as any            // "preset" is valid at runtime, TS types just don't expose it yet
+        }
+      : {
+          server: {
+            entry: "server",
+          },
+        }),
+  };
+
   const plugins = [
     tailwindcss(),
     tsconfigPaths({ projects: ["./tsconfig.json"] }),
-    tanstackStart({
-      server: {
-        entry: "server",
-      },
-      importProtection: {
-        behavior: "error",
-        client: {
-          files: ["**/server/**"],
-          specifiers: ["server-only"],
-        },
-      },
-    }),
+    tanstackStart(startOptions),
     react(),
     {
       name: "tanstack-start-injected-head-scripts-mock",
@@ -44,6 +56,7 @@ export default defineConfig(async ({ command, mode }) => {
     },
   ];
 
+  // Cloudflare plugin only for non-Vercel local builds
   if (command === "build" && !isVercel) {
     try {
       const { cloudflare } = await import("@cloudflare/vite-plugin");
