@@ -11,44 +11,47 @@ export default defineConfig(async ({ command, mode }) => {
     envDefine[`import.meta.env.${key}`] = JSON.stringify(value);
   }
 
+  const isVercel = !!process.env.VERCEL;
+
   const plugins = [
     tailwindcss(),
     tsconfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart({
       server: {
         entry: "server",
-        preset: process.env.VERCEL ? "vercel" : undefined
       },
       importProtection: {
         behavior: "error",
         client: {
           files: ["**/server/**"],
-          specifiers: ["server-only"]
-        }
-      }
+          specifiers: ["server-only"],
+        },
+      },
     }),
     react(),
     {
-      name: 'tanstack-start-injected-head-scripts-mock',
-      resolveId(id) {
-        if (id === 'tanstack-start-injected-head-scripts:v') {
-          return '\0' + id;
+      name: "tanstack-start-injected-head-scripts-mock",
+      resolveId(id: string) {
+        if (id === "tanstack-start-injected-head-scripts:v") {
+          return "\0" + id;
         }
       },
-      load(id) {
-        if (id === '\0tanstack-start-injected-head-scripts:v') {
+      load(id: string) {
+        if (id === "\0tanstack-start-injected-head-scripts:v") {
           return 'export const injectedHeadScripts = "";';
         }
-      }
-    }
+      },
+    },
   ];
 
-  if (command === "build" && !process.env.VERCEL) {
+  if (command === "build" && !isVercel) {
     try {
       const { cloudflare } = await import("@cloudflare/vite-plugin");
-      plugins.push(cloudflare({
-        viteEnvironment: { name: "ssr" }
-      }));
+      plugins.push(
+        cloudflare({
+          viteEnvironment: { name: "ssr" },
+        })
+      );
     } catch (e) {
       console.warn("Could not load cloudflare plugin:", e);
     }
@@ -62,15 +65,15 @@ export default defineConfig(async ({ command, mode }) => {
           rollupOptions: {
             output: {
               inlineDynamicImports: true,
-              entryFileNames: "server.js"
-            }
-          }
-        }
-      }
+              entryFileNames: "server.js",
+            },
+          },
+        },
+      },
     },
     resolve: {
       alias: {
-        "@": `${process.cwd()}/src`
+        "@": `${process.cwd()}/src`,
       },
       dedupe: [
         "react",
@@ -78,8 +81,8 @@ export default defineConfig(async ({ command, mode }) => {
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
         "@tanstack/react-query",
-        "@tanstack/query-core"
-      ]
+        "@tanstack/query-core",
+      ],
     },
     plugins,
     server: {
@@ -88,9 +91,9 @@ export default defineConfig(async ({ command, mode }) => {
       watch: {
         awaitWriteFinish: {
           stabilityThreshold: 1000,
-          pollInterval: 100
-        }
-      }
-    }
+          pollInterval: 100,
+        },
+      },
+    },
   };
 });

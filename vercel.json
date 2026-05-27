@@ -2,13 +2,25 @@
   "version": 2,
   "functions": {
     "api/server.ts": {
-      "includeFiles": "dist/**"
+      "includeFiles": "dist/**",
+      "maxDuration": 30
     }
   },
   "rewrites": [
     {
-      "source": "/((?!assets/|.*\\..*$).*)",
+      "source": "/((?!_assets/|assets/|favicon.*|.*\\..*$).*)",
       "destination": "/api/server"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ]
 }
