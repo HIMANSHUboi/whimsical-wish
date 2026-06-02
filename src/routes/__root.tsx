@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -16,8 +17,10 @@ import { ConfettiBurst } from "@/components/ConfettiBurst";
 import { LightboxProvider } from "@/components/Lightbox";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { FloatingElements } from "@/components/FloatingElements";
+import { CountdownLockScreen } from "@/components/CountdownLockScreen";
 
 import appCss from "../styles.css?url";
+
 
 function NotFoundComponent() {
   return (
@@ -84,6 +87,45 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const [isUnlocked, setIsUnlocked] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const BIRTHDAY = new Date("2026-06-16T00:00:00").getTime();
+    const isPastBirthday = Date.now() >= BIRTHDAY;
+    const hasSecretLS = localStorage.getItem("vanya_site_unlocked") === "true";
+    
+    const params = new URLSearchParams(window.location.search);
+    const codeParam = params.get("code")?.toLowerCase() || params.get("secret")?.toLowerCase();
+    const hasSecretUrl = codeParam === "braydenimissyou";
+
+    if (hasSecretUrl) {
+      localStorage.setItem("vanya_site_unlocked", "true");
+      // Clean up URL parameter to keep it clean
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("code");
+        url.searchParams.delete("secret");
+        window.history.replaceState({}, document.title, url.pathname + url.search);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    if (isPastBirthday || hasSecretLS || hasSecretUrl) {
+      setIsUnlocked(true);
+    }
+  }, []);
+
+  const handleUnlock = () => {
+    setIsUnlocked(true);
+    if (typeof window !== "undefined") {
+      // Fire confetti burst upon successful passcode entry
+      window.dispatchEvent(new Event("trigger-confetti"));
+    }
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <LightboxProvider>
@@ -92,15 +134,22 @@ function RootComponent() {
         <CursorTrail />
         <ScrollProgress />
         <FloatingElements />
-        <div className="min-h-screen flex flex-col">
-          <SiteNav />
-          <main className="flex-1">
-            <Outlet />
-          </main>
-          <SiteFooter />
+        <div className="min-h-screen flex flex-col font-body">
+          {isUnlocked ? (
+            <>
+              <SiteNav />
+              <main className="flex-1">
+                <Outlet />
+              </main>
+              <SiteFooter />
+            </>
+          ) : (
+            <CountdownLockScreen onUnlock={handleUnlock} />
+          )}
         </div>
         <MusicPlayer />
       </LightboxProvider>
     </QueryClientProvider>
   );
 }
+

@@ -57,9 +57,11 @@ export default defineConfig(async ({ command, mode }) => {
 
   return {
     define: envDefine,
-    ssr: {
-      noExternal: true,
-    },
+    ...(command === "build" ? {
+      ssr: {
+        noExternal: true,
+      },
+    } : {}),
     environments: {
       ssr: {
         build: {

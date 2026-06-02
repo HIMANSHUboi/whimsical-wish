@@ -1,12 +1,16 @@
+import { useMemo } from "react";
+
 export function Sparkles({ count = 20 }: { count?: number }) {
-  const stars = Array.from({ length: count }, (_, i) => ({
-    id: i,
-    top: Math.random() * 100,
-    left: Math.random() * 100,
-    size: Math.random() * 8 + 4,
-    delay: Math.random() * 3,
-    duration: Math.random() * 2 + 2,
-  }));
+  const stars = useMemo(() => {
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      size: Math.random() * 8 + 4,
+      delay: Math.random() * 3,
+      duration: Math.random() * 2 + 2,
+    }));
+  }, [count]);
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -21,6 +25,7 @@ export function Sparkles({ count = 20 }: { count?: number }) {
             height: s.size,
             animationDelay: `${s.delay}s`,
             animationDuration: `${s.duration}s`,
+            willChange: "transform, opacity",
           }}
           viewBox="0 0 24 24"
           fill="currentColor"
