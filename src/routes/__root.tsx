@@ -21,6 +21,8 @@ import { CountdownLockScreen } from "@/components/CountdownLockScreen";
 
 import appCss from "../styles.css?url";
 
+const SECRET_PASSCODE = "braydenimissyou";
+const LS_KEY = "vanya_site_unlocked";
 
 function NotFoundComponent() {
   return (
@@ -63,8 +65,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { title: "Happy Birthday, Vanya Bharti ✦" },
         {
           name: "description",
-          content:
-            "A whimsical birthday wish for Vanya Bharti — 16 June 2026.",
+          content: "A whimsical birthday wish for Vanya Bharti — 16 June 2026.",
         },
       ],
       links: [{ rel: "stylesheet", href: appCss }],
@@ -94,15 +95,16 @@ function RootComponent() {
 
     const BIRTHDAY = new Date("2026-06-16T00:00:00").getTime();
     const isPastBirthday = Date.now() >= BIRTHDAY;
-    const hasSecretLS = localStorage.getItem("vanya_site_unlocked") === "true";
-    
+    const hasSecretLS = localStorage.getItem(LS_KEY) === "true";
+
     const params = new URLSearchParams(window.location.search);
     const codeParam = params.get("code")?.toLowerCase() || params.get("secret")?.toLowerCase();
-    const hasSecretUrl = codeParam === "braydenimissyou";
+    const hasSecretUrl = codeParam === SECRET_PASSCODE;
 
     if (hasSecretUrl) {
-      localStorage.setItem("vanya_site_unlocked", "true");
-      // Clean up URL parameter to keep it clean
+      // Persist URL-based unlock so future reloads stay unlocked
+      localStorage.setItem(LS_KEY, "true");
+      // Clean up URL parameter
       try {
         const url = new URL(window.location.href);
         url.searchParams.delete("code");
@@ -119,11 +121,12 @@ function RootComponent() {
   }, []);
 
   const handleUnlock = () => {
-    setIsUnlocked(true);
+    // Persist unlock to localStorage so page refresh doesn't re-show the lock screen
     if (typeof window !== "undefined") {
-      // Fire confetti burst upon successful passcode entry
+      localStorage.setItem(LS_KEY, "true");
       window.dispatchEvent(new Event("trigger-confetti"));
     }
+    setIsUnlocked(true);
   };
 
   return (
@@ -152,4 +155,3 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
-
