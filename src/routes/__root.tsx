@@ -21,8 +21,10 @@ import { CountdownLockScreen } from "@/components/CountdownLockScreen";
 
 import appCss from "../styles.css?url";
 
+const BIRTHDAY = new Date("2026-06-16T00:00:00").getTime();
 const SECRET_PASSCODE = "braydenimissyou";
-const LS_KEY = "vanya_site_unlocked";
+// Session-only key — lives only for the current tab, cleared on close/refresh
+const SESSION_KEY = "vanya_preview_session";
 
 function NotFoundComponent() {
   return (
@@ -93,18 +95,23 @@ function RootComponent() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const BIRTHDAY = new Date("2026-06-16T00:00:00").getTime();
     const isPastBirthday = Date.now() >= BIRTHDAY;
-    const hasSecretLS = localStorage.getItem(LS_KEY) === "true";
 
+    // Only auto-unlock permanently once the birthday has arrived
+    if (isPastBirthday) {
+      setIsUnlocked(true);
+      return;
+    }
+
+    // Check for ?code= URL param (Himanshu's preview link) — session only
     const params = new URLSearchParams(window.location.search);
     const codeParam = params.get("code")?.toLowerCase() || params.get("secret")?.toLowerCase();
     const hasSecretUrl = codeParam === SECRET_PASSCODE;
 
     if (hasSecretUrl) {
-      // Persist URL-based unlock so future reloads stay unlocked
-      localStorage.setItem(LS_KEY, "true");
-      // Clean up URL parameter
+      // Save to sessionStorage (tab-scoped, not permanent)
+      sessionStorage.setItem(SESSION_KEY, "true");
+      // Clean the URL so the code isn't visible
       try {
         const url = new URL(window.location.href);
         url.searchParams.delete("code");
@@ -115,15 +122,19 @@ function RootComponent() {
       }
     }
 
-    if (isPastBirthday || hasSecretLS || hasSecretUrl) {
+    // Check session-scoped preview unlock (survives navigation within the same tab)
+    const hasSessionUnlock = sessionStorage.getItem(SESSION_KEY) === "true";
+
+    if (hasSessionUnlock) {
       setIsUnlocked(true);
     }
   }, []);
 
   const handleUnlock = () => {
-    // Persist unlock to localStorage so page refresh doesn't re-show the lock screen
     if (typeof window !== "undefined") {
-      localStorage.setItem(LS_KEY, "true");
+      // Session-only: survives in-tab navigation but NOT a full refresh or new tab
+      // This keeps the site locked for anyone who stumbles on it before June 16
+      sessionStorage.setItem(SESSION_KEY, "true");
       window.dispatchEvent(new Event("trigger-confetti"));
     }
     setIsUnlocked(true);
