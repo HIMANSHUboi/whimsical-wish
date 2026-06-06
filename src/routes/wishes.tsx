@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Sparkles } from "@/components/Sparkles";
 import { Reveal } from "@/components/Reveal";
 import { ParallaxTilt } from "@/components/ParallaxTilt";
+import { Volume2, VolumeX } from "lucide-react";
 import usRide from "@/assets/us-ride.png";
 import vanyaGreenShirt from "@/assets/vanya-green-shirt.png";
+import lily1 from "@/assets/lily1.png";
 import { LightboxImage } from "@/components/Lightbox";
 
 export const Route = createFileRoute("/wishes")({
@@ -20,6 +22,46 @@ export const Route = createFileRoute("/wishes")({
 function Wishes() {
   const [opened, setOpened] = useState(false);
   const [envelopeAnimating, setEnvelopeAnimating] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  const LETTER_TEXT = `Dear Vanya, The day finally is here we all have been waiting for this very special day. 
+  Your presence in my life is a gift that I will cherish forever. Everytime we met was really special to me. 
+  I really want to thank you for being with me when I was not having a good time. 
+  Everytime you pulled cards for me brought blessings in my life. 
+  You have capability to understand your close ones deeply. 
+  Watching you turn 22 is one of my favourite things. 
+  You carry the world so gently, with your lavender playlists, your little tea rituals, your Pinterest boards full of dreams. 
+  I hope this year is kinder than the last, and louder in all the good ways. 
+  May every cup you brew taste like a tiny celebration. May every card you pull whisper something hopeful. 
+  May your sixteenth of June feel exactly the way you deserve — warm, golden, and entirely yours. 
+  All I want you to know is anything that brings you down was never meant for you. 
+  May your life be filled with all the happiness in the world. Here is to 22 — the softest kind of magic I know. 
+  Always yours, Himanshu Matta.`;
+
+  const readAloud = () => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    if (speaking) {
+      window.speechSynthesis.cancel();
+      setSpeaking(false);
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(LETTER_TEXT);
+    utterance.rate = 0.88;
+    utterance.pitch = 1.05;
+    utterance.volume = 0.95;
+    // Try to pick a soft voice
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = voices.find(
+      (v) => v.name.includes("Samantha") || v.name.includes("Karen") || v.name.includes("Female")
+    ) || voices[0];
+    if (preferred) utterance.voice = preferred;
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+    setSpeaking(true);
+  };
 
   const openEnvelope = () => {
     if (opened || envelopeAnimating) return;
@@ -33,6 +75,11 @@ function Wishes() {
   return (
     <section className="relative bg-dreamy py-20 overflow-hidden min-h-[80vh]">
       <Sparkles count={25} />
+
+      {/* Lily decoration */}
+      <div className="absolute bottom-0 right-0 w-48 md:w-64 opacity-25 pointer-events-none select-none animate-float">
+        <img src={lily1} alt="" className="w-full h-auto object-contain" style={{ filter: "hue-rotate(20deg) saturate(0.7)" }} />
+      </div>
 
       {/* floating decorative hearts */}
       <span className="absolute top-20 left-10 text-4xl text-primary/30 animate-float">♡</span>
@@ -127,6 +174,25 @@ function Wishes() {
                 <span className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gold flex items-center justify-center text-twilight text-xl animate-float shadow-glow">
                   ✦
                 </span>
+
+                {/* Read Aloud Button */}
+                <div className="flex justify-end">
+                  <button
+                    onClick={readAloud}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+                      speaking
+                        ? "bg-primary/20 border-primary text-primary animate-pulse"
+                        : "border-border/60 text-muted-foreground hover:border-primary/50 hover:text-primary"
+                    }`}
+                    title={speaking ? "Stop reading" : "Read letter aloud"}
+                  >
+                    {speaking ? (
+                      <><VolumeX className="w-3.5 h-3.5" /> Stop Reading</>
+                    ) : (
+                      <><Volume2 className="w-3.5 h-3.5" /> Read Aloud ✦</>
+                    )}
+                  </button>
+                </div>
                 <p className="font-script text-3xl text-primary">dear Vanya,</p>
                 <p className="text-lg leading-relaxed text-foreground/80">
                   The day finally is here we all have been waiting for this very special day 

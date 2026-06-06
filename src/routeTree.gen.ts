@@ -15,6 +15,7 @@ import { Route as TarotRouteImport } from './routes/tarot'
 import { Route as StarmapRouteImport } from './routes/starmap'
 import { Route as MoodboardRouteImport } from './routes/moodboard'
 import { Route as MatchaRouteImport } from './routes/matcha'
+import { Route as LiliesRouteImport } from './routes/lilies'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -49,6 +50,11 @@ const MatchaRoute = MatchaRouteImport.update({
   path: '/matcha',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LiliesRoute = LiliesRouteImport.update({
+  id: '/lilies',
+  path: '/lilies',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CalendarRoute = CalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/calendar': typeof CalendarRoute
+  '/lilies': typeof LiliesRoute
   '/matcha': typeof MatchaRoute
   '/moodboard': typeof MoodboardRoute
   '/starmap': typeof StarmapRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/calendar': typeof CalendarRoute
+  '/lilies': typeof LiliesRoute
   '/matcha': typeof MatchaRoute
   '/moodboard': typeof MoodboardRoute
   '/starmap': typeof StarmapRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/calendar': typeof CalendarRoute
+  '/lilies': typeof LiliesRoute
   '/matcha': typeof MatchaRoute
   '/moodboard': typeof MoodboardRoute
   '/starmap': typeof StarmapRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/calendar'
+    | '/lilies'
     | '/matcha'
     | '/moodboard'
     | '/starmap'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/calendar'
+    | '/lilies'
     | '/matcha'
     | '/moodboard'
     | '/starmap'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/calendar'
+    | '/lilies'
     | '/matcha'
     | '/moodboard'
     | '/starmap'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   CalendarRoute: typeof CalendarRoute
+  LiliesRoute: typeof LiliesRoute
   MatchaRoute: typeof MatchaRoute
   MoodboardRoute: typeof MoodboardRoute
   StarmapRoute: typeof StarmapRoute
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MatchaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lilies': {
+      id: '/lilies'
+      path: '/lilies'
+      fullPath: '/lilies'
+      preLoaderRoute: typeof LiliesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/calendar': {
       id: '/calendar'
       path: '/calendar'
@@ -219,6 +239,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   CalendarRoute: CalendarRoute,
+  LiliesRoute: LiliesRoute,
   MatchaRoute: MatchaRoute,
   MoodboardRoute: MoodboardRoute,
   StarmapRoute: StarmapRoute,

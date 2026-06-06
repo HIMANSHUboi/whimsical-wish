@@ -1,6 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { Sparkles } from "@/components/Sparkles";
 import { Lock, Unlock, Music, Heart, Volume2 } from "lucide-react";
+import lily1 from "@/assets/lily1.png";
+import lily2 from "@/assets/lily2.png";
 
 // Target date: June 16, 2026
 const BIRTHDAY = new Date("2026-06-16T00:00:00").getTime();
@@ -111,10 +113,58 @@ export function CountdownLockScreen({ onUnlock }: CountdownLockScreenProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showModal]);
 
+  // Falling lily petals
+  const petals = useMemo(() =>
+    Array.from({ length: 18 }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      size: Math.random() * 20 + 14,
+      duration: Math.random() * 8 + 8,
+      delay: Math.random() * 10,
+      rotation: Math.random() * 360,
+      drift: Math.random() * 80 - 40,
+      color: ["#c4b5fd", "#f9a8d4", "#fde68a", "#a5f3fc", "#d8b4fe", "#fbcfe8"][i % 6],
+    })),
+  []);
+
   return (
     <div className={`relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-twilight select-none transition-all duration-1000 ${isUnlocking ? "opacity-0 scale-105 pointer-events-none" : "opacity-100"}`}>
       {/* Background Sparkles */}
       <Sparkles count={15} />
+
+      {/* Falling Lily Petals */}
+      {petals.map((petal) => (
+        <div
+          key={petal.id}
+          className="absolute pointer-events-none"
+          style={{
+            left: `${petal.left}%`,
+            top: `-${petal.size + 10}px`,
+            animation: `petal-fall ${petal.duration}s ${petal.delay}s ease-in-out infinite`,
+            "--petal-drift": `${petal.drift}px`,
+          } as React.CSSProperties}
+        >
+          <svg
+            width={petal.size}
+            height={petal.size * 1.4}
+            viewBox="0 0 24 34"
+            fill="none"
+            style={{ transform: `rotate(${petal.rotation}deg)`, opacity: 0.75 }}
+          >
+            <ellipse cx="12" cy="20" rx="7" ry="11" fill={petal.color} opacity="0.85" />
+            <ellipse cx="12" cy="8" rx="4.5" ry="7" fill={petal.color} opacity="0.95" />
+            <ellipse cx="12" cy="12" rx="3" ry="5" fill="white" opacity="0.4" />
+          </svg>
+        </div>
+      ))}
+
+      {/* Lily corner accents on lock screen */}
+      <div className="absolute -left-10 bottom-16 w-36 opacity-20 pointer-events-none select-none animate-float">
+        <img src={lily1} alt="" className="w-full h-auto object-contain" />
+      </div>
+      <div className="absolute -right-8 top-28 w-28 opacity-15 pointer-events-none select-none animate-float" style={{ animationDelay: "3s" }}>
+        <img src={lily2} alt="" className="w-full h-auto object-contain" style={{ transform: "scaleX(-1)" }} />
+      </div>
 
       {/* Decorative Orbits & Nebulas (Optimized with radial gradients, avoiding expensive CSS blur filters) */}
       <div 

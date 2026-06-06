@@ -3,6 +3,8 @@ import { Sparkles } from "@/components/Sparkles";
 import { Reveal } from "@/components/Reveal";
 import { ParallaxTilt } from "@/components/ParallaxTilt";
 import { LightboxImage } from "@/components/Lightbox";
+import lily1 from "@/assets/lily1.png";
+import lily2 from "@/assets/lily2.png";
 import vanyaPortrait from "@/assets/vanya-portrait.png";
 import vanyaGreenShirt from "@/assets/vanya-green-shirt.png";
 
@@ -20,6 +22,14 @@ function About() {
   return (
     <section className="relative bg-dreamy py-20 overflow-hidden">
       <Sparkles count={25} />
+
+      {/* Lily corner decorations */}
+      <div className="absolute -bottom-4 -left-8 w-40 md:w-56 pointer-events-none opacity-30 animate-float select-none" style={{ animationDelay: "1.5s" }}>
+        <img src={lily1} alt="" className="w-full h-auto object-contain" />
+      </div>
+      <div className="absolute top-20 -right-6 w-32 md:w-44 pointer-events-none opacity-25 animate-float select-none">
+        <img src={lily2} alt="" className="w-full h-auto object-contain" style={{ transform: "scaleX(-1)" }} />
+      </div>
       <div className="relative mx-auto max-w-5xl px-6 space-y-16">
 
         {/* Header */}
