@@ -96,31 +96,31 @@ function Tarot() {
   };
 
   return (
-    <section className="relative bg-twilight text-primary-foreground py-20 overflow-hidden min-h-[80vh]">
-      <div className="absolute inset-0 bg-gradient-to-b from-twilight/70 via-twilight/40 to-twilight/90" aria-hidden />
+    <section className="relative bg-background text-foreground py-20 overflow-hidden min-h-[80vh]">
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-secondary/15" aria-hidden />
       <Sparkles count={40} />
       <div className="relative mx-auto max-w-5xl px-6 text-center space-y-10 animate-fade-up">
-        <p className="font-script text-3xl text-gold">a card for you</p>
-        <h1 className="font-display text-5xl md:text-6xl text-balance">The Tarot Garden</h1>
+        <p className="font-script text-3xl text-primary animate-pulse">a card for you</p>
+        <h1 className="font-display text-5xl md:text-6xl text-balance text-twilight">The Tarot Garden</h1>
 
         {/* Tab switcher */}
         <div className="flex justify-center gap-3">
           <button
             onClick={() => setTab("daily")}
-            className={`px-6 py-2.5 rounded-full border text-sm font-medium transition-all duration-300 ${
+            className={`px-6 py-2.5 rounded-full border text-sm font-medium transition-all duration-300 cursor-pointer ${
               tab === "daily"
-                ? "bg-gold text-twilight border-gold shadow-glow"
-                : "border-gold/30 text-gold/70 hover:border-gold/60 hover:text-gold"
+                ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                : "border-primary/30 text-primary/70 hover:border-primary/60 hover:text-primary bg-card/40"
             }`}
           >
             ☀ Daily Pull
           </button>
           <button
             onClick={() => setTab("spread")}
-            className={`px-6 py-2.5 rounded-full border text-sm font-medium transition-all duration-300 ${
+            className={`px-6 py-2.5 rounded-full border text-sm font-medium transition-all duration-300 cursor-pointer ${
               tab === "spread"
-                ? "bg-gold text-twilight border-gold shadow-glow"
-                : "border-gold/30 text-gold/70 hover:border-gold/60 hover:text-gold"
+                ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                : "border-primary/30 text-primary/70 hover:border-primary/60 hover:text-primary bg-card/40"
             }`}
           >
             ✦ Three-Card Spread
@@ -130,7 +130,7 @@ function Tarot() {
         {/* DAILY PULL */}
         {tab === "daily" && (
           <Reveal className="space-y-8">
-            <p className="text-white/60 max-w-md mx-auto italic">
+            <p className="text-foreground/75 max-w-md mx-auto italic">
               One card pulled for today — {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.
               Let it guide you gently.
             </p>
@@ -153,10 +153,10 @@ function Tarot() {
                       <div className="absolute inset-3 border border-gold/25 rounded-xl" />
                     </div>
                     {/* Card Front */}
-                    <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl border-2 border-gold/60 bg-gradient-to-br from-purple-900/80 to-indigo-900/80 shadow-glow flex flex-col items-center justify-center p-6 text-center">
+                    <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl border-2 border-gold/60 bg-gradient-to-br from-purple-900 to-indigo-950 shadow-glow flex flex-col items-center justify-center p-6 text-center">
                       <div className="text-6xl text-gold mb-4 animate-bounce-in">{dailyCard.emoji}</div>
                       <p className="font-display text-2xl text-gold mb-3">{dailyCard.name}</p>
-                      <p className="text-sm text-white/80 italic leading-relaxed">{dailyCard.meaning}</p>
+                      <p className="text-sm text-white/90 italic leading-relaxed">{dailyCard.meaning}</p>
                       <div className="absolute -inset-1 rounded-2xl bg-gold/10 blur-xl -z-10 animate-glow-pulse" />
                     </div>
                   </div>
@@ -164,12 +164,12 @@ function Tarot() {
 
                 {dailyFlipped && (
                   <div className="max-w-sm text-center space-y-4 animate-fade-up">
-                    <p className="text-white/60 text-sm leading-relaxed italic">
+                    <p className="text-foreground/80 text-sm leading-relaxed italic">
                       {dailyCard.detail}
                     </p>
                     <button
                       onClick={copyDailyCard}
-                      className="rounded-full border border-gold/40 text-gold px-5 py-2 text-sm hover:bg-gold/10 transition-all"
+                      className="rounded-full border border-primary/40 text-primary px-5 py-2 text-sm hover:bg-primary/10 transition-all cursor-pointer"
                     >
                       {dailyCopied ? "copied ✓" : "copy reading ✦"}
                     </button>
@@ -183,13 +183,13 @@ function Tarot() {
         {/* THREE-CARD SPREAD */}
         {tab === "spread" && (
           <>
-            <p className="text-white/70 max-w-xl mx-auto">
+            <p className="text-foreground/75 max-w-xl mx-auto">
               Close your eyes, make a little birthday wish, and draw a three-card spread — past, present, and future.
             </p>
 
             {spread.length === 0 && (
               <button onClick={drawSpread} disabled={drawing}
-                className="mx-auto w-56 h-80 rounded-2xl border-2 border-gold/60 shadow-glow flex items-center justify-center transition-all duration-500 hover:scale-105 animate-glow-pulse"
+                className="mx-auto w-56 h-80 rounded-2xl border-2 border-gold/60 shadow-glow flex items-center justify-center transition-all duration-500 hover:scale-105 animate-glow-pulse cursor-pointer"
                 style={{ background: "linear-gradient(135deg, #3b0764 0%, #1e1b4b 100%)" }}
               >
                 <div className="text-center space-y-4">
@@ -206,7 +206,7 @@ function Tarot() {
                     const card = cards[s.index];
                     return (
                       <div key={i} className="flex flex-col items-center gap-3">
-                        <p className="text-xs uppercase tracking-[0.25em] text-gold/70">{posLabels[s.position]}</p>
+                        <p className="text-xs uppercase tracking-[0.25em] text-primary/80 font-medium">{posLabels[s.position]}</p>
                         <ParallaxTilt max={12} className="perspective-800 w-44 h-64 sm:w-52 sm:h-72">
                           <div className="relative w-full h-full preserve-3d transition-transform duration-700 ease-out"
                             style={{ transform: s.flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}>
@@ -219,10 +219,10 @@ function Tarot() {
                               <div className="absolute inset-3 border border-gold/25 rounded-xl" />
                             </div>
                             {/* Card Front */}
-                            <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl border-2 border-gold/60 bg-gradient-to-br from-purple-900/80 to-indigo-900/80 shadow-glow flex flex-col items-center justify-center p-6 text-center">
+                            <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl border-2 border-gold/60 bg-gradient-to-br from-purple-900 to-indigo-950 shadow-glow flex flex-col items-center justify-center p-6 text-center">
                               <div className="text-5xl sm:text-6xl text-gold mb-4 animate-bounce-in">{card.emoji}</div>
                               <p className="font-display text-xl sm:text-2xl text-gold mb-3">{card.name}</p>
-                              <p className="text-sm text-white/80 italic leading-relaxed">{card.meaning}</p>
+                              <p className="text-sm text-white/90 italic leading-relaxed">{card.meaning}</p>
                               <div className="absolute -inset-1 rounded-2xl bg-gold/10 blur-xl -z-10 animate-glow-pulse" />
                             </div>
                           </div>
@@ -231,10 +231,10 @@ function Tarot() {
                     );
                   })}
                 </div>
-                <div className="flex flex-col items-center gap-3 pt-6">
-                  <button onClick={drawSpread} disabled={drawing} className="text-sm text-gold/80 underline underline-offset-4 hover:text-gold disabled:opacity-50">draw a new spread</button>
+                <div className="flex flex-col items-center gap-3 pt-6 animate-fade-up">
+                  <button onClick={drawSpread} disabled={drawing} className="text-sm text-primary/80 underline underline-offset-4 hover:text-primary disabled:opacity-50 cursor-pointer">draw a new spread</button>
                   {spread.every((s) => s.flipped) && (
-                    <button onClick={shareReading} className="rounded-full border border-gold/40 text-gold px-6 py-2 text-sm hover:bg-gold/10 transition-colors">share your reading ✦</button>
+                    <button onClick={shareReading} className="rounded-full border border-primary/40 text-primary px-6 py-2 text-sm hover:bg-primary/10 transition-colors cursor-pointer">share your reading ✦</button>
                   )}
                 </div>
               </>
@@ -242,9 +242,9 @@ function Tarot() {
           </>
         )}
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-12 max-w-3xl mx-auto opacity-60">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-12 max-w-3xl mx-auto opacity-70">
           {cards.map((c, i) => (
-            <div key={i} className="aspect-[2/3] rounded-lg border border-gold/30 flex flex-col items-center justify-center gap-1 text-gold/60 hover:border-gold/60 hover:text-gold transition-colors">
+            <div key={i} className="aspect-[2/3] rounded-lg border border-border/85 bg-card/40 flex flex-col items-center justify-center gap-1 text-primary/70 hover:border-primary/60 hover:text-primary transition-colors cursor-default">
               <span className="text-xl">{c.emoji}</span>
               <span className="text-[9px] uppercase tracking-wider">{c.name}</span>
             </div>

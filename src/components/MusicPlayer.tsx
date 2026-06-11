@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Play, Pause, Volume2, VolumeX, Sliders, X, Sparkles } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, Sparkles, X, Music, RotateCcw } from "lucide-react";
 
 // @ts-ignore
 import kissOfLifeUrl from "@/assets/kiss of life.mp3";
@@ -18,11 +18,11 @@ interface VibeController {
 }
 
 const VIBES = [
-  { id: "chimes", name: "Dreamy Chimes", emoji: "🌌" },
-  { id: "forest", name: "Enchanted Forest", emoji: "🧚" },
-  { id: "sade", name: "Kiss of Life", emoji: "🎷" },
-  { id: "reflections", name: "Reflections", emoji: "✨" },
-  { id: "those-eyes", name: "Those Eyes", emoji: "👁️" },
+  { id: "chimes", name: "Dreamy Chimes", emoji: "🌌", color: "from-blue-600/30 to-indigo-700/30" },
+  { id: "forest", name: "Enchanted Forest", emoji: "🧚", color: "from-emerald-600/30 to-teal-700/30" },
+  { id: "sade", name: "Kiss of Life", emoji: "🎷", color: "from-rose-600/30 to-purple-700/30" },
+  { id: "reflections", name: "Reflections", emoji: "✨", color: "from-amber-500/30 to-orange-700/30" },
+  { id: "those-eyes", name: "Those Eyes", emoji: "👁️", color: "from-fuchsia-600/30 to-pink-700/30" },
 ];
 
 /**
@@ -208,7 +208,6 @@ export function MusicPlayer() {
       const url = selectedVibe === "sade" ? kissOfLifeUrl : selectedVibe === "reflections" ? reflectionsUrl : thoseEyesUrl;
       const audio = new Audio(url);
       audio.loop = true;
-      // Scale standard volume. Max 100% maps to gain value of 0.8 to avoid distortion
       audio.volume = (targetVolume / 100) * 0.8;
       audioRef.current = audio;
 
@@ -271,12 +270,10 @@ export function MusicPlayer() {
     setVolume(newVol);
     localStorage.setItem(STORAGE_KEY_VOL, String(newVol));
 
-    // Update synth volume in real-time
     if (masterGainRef.current && ctxRef.current) {
       masterGainRef.current.gain.setValueAtTime((newVol / 100) * 0.8, ctxRef.current.currentTime);
     }
 
-    // Update MP3 volume in real-time
     if (audioRef.current) {
       audioRef.current.volume = (newVol / 100) * 0.8;
     }
@@ -286,7 +283,6 @@ export function MusicPlayer() {
     setVibe(newVibe);
     localStorage.setItem(STORAGE_KEY_VIBE, newVibe);
     if (playing) {
-      // Re-trigger playback immediately with the new vibe/track
       startPlaying(newVibe, volume);
     }
   };
@@ -303,45 +299,106 @@ export function MusicPlayer() {
     };
   }, []);
 
+  const currentVibe = VIBES.find((v) => v.id === vibe) || VIBES[0];
+
   return (
     <div
       ref={menuRef}
       className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 font-body select-none"
     >
-      {/* Settings Popover */}
+      {/* Retro Cassette settings popover */}
       {showSettings && (
-        <div className="w-76 bg-card/90 backdrop-blur-xl border border-border/50 rounded-2xl p-4 shadow-soft animate-slide-up flex flex-col gap-4 text-foreground">
+        <div className="w-[340px] bg-card/95 backdrop-blur-xl border-2 border-primary/20 rounded-[2rem] p-5 shadow-glow animate-slide-up flex flex-col gap-4 text-foreground">
+          {/* Header */}
           <div className="flex items-center justify-between border-b border-border/30 pb-2">
             <div className="flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-primary animate-twinkle" />
-              <h3 className="font-display text-lg font-medium text-primary">Celestial Vibes</h3>
+              <h3 className="font-display text-lg font-medium text-primary">Vintage Cassette Deck</h3>
             </div>
             <button
               onClick={() => setShowSettings(false)}
-              className="p-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              title="Close menu"
+              className="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
+          {/* CASSETTE TAPE CONTAINER */}
+          <div className="relative w-full aspect-[1.6/1] bg-neutral-900 border-[6px] border-neutral-800 rounded-2xl p-3 shadow-inner flex flex-col justify-between overflow-hidden">
+            {/* Cassette texture sheen */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 pointer-events-none" />
+
+            {/* Top Label */}
+            <div className="flex justify-between items-center text-[8px] font-bold text-neutral-400 tracking-wider">
+              <span>SIDE A</span>
+              <span>STEREO</span>
+            </div>
+
+            {/* The Sticker Label */}
+            <div className={`flex-1 bg-gradient-to-r ${currentVibe.color} border-2 border-neutral-700 rounded-lg p-2.5 flex flex-col justify-between relative`}>
+              <div className="flex justify-between items-start">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-white/95">Vanya's Mix ♊</span>
+                <span className="text-[9px] font-semibold text-white/60">Vol. 22</span>
+              </div>
+
+              {/* Title tape */}
+              <div className="bg-white/90 rounded border border-neutral-400 px-2 py-0.5 mt-1">
+                <p className="font-script text-[13px] text-neutral-800 font-bold leading-none py-0.5 truncate text-center">
+                  {currentVibe.name}
+                </p>
+              </div>
+
+              {/* The spindles & window */}
+              <div className="flex justify-center items-center gap-8 mt-2">
+                {/* Left Spindle */}
+                <div className={`w-8 h-8 rounded-full bg-neutral-800 border-4 border-neutral-700 flex items-center justify-center relative ${playing ? "animate-spin" : ""}`} style={{ animationDuration: "3s" }}>
+                  <div className="w-3 h-3 bg-neutral-900 rounded-full flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 bg-neutral-600 rounded-sm" />
+                  </div>
+                  {/* Spindle teeth details */}
+                  <div className="absolute inset-0.5 border border-dashed border-neutral-500 rounded-full pointer-events-none opacity-40" />
+                </div>
+
+                {/* Center Glass Window */}
+                <div className="w-16 h-6 bg-neutral-950/80 rounded-md border-2 border-neutral-800 relative overflow-hidden flex items-center justify-center">
+                  <div className="w-12 h-[1px] bg-red-600/40" />
+                  <div className="absolute left-1/2 -translate-x-1/2 h-full w-[2px] bg-neutral-800" />
+                  {/* Tape roll visual */}
+                  <div className="absolute left-2 w-4 h-4 rounded-full bg-amber-950/60 border border-amber-900" />
+                  <div className="absolute right-2 w-4 h-4 rounded-full bg-amber-950/60 border border-amber-900" />
+                </div>
+
+                {/* Right Spindle */}
+                <div className={`w-8 h-8 rounded-full bg-neutral-800 border-4 border-neutral-700 flex items-center justify-center relative ${playing ? "animate-spin" : ""}`} style={{ animationDuration: "3s" }}>
+                  <div className="w-3 h-3 bg-neutral-900 rounded-full flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 bg-neutral-600 rounded-sm" />
+                  </div>
+                  {/* Spindle teeth details */}
+                  <div className="absolute inset-0.5 border border-dashed border-neutral-500 rounded-full pointer-events-none opacity-40" />
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom tape shell holes */}
+            <div className="flex justify-center gap-6 mt-1 text-[8px] text-neutral-500 font-bold">
+              <span>NR</span>
+              <span>120μs</span>
+              <span>CrO2</span>
+            </div>
+          </div>
+
           {/* Volume Control */}
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
-              <span>Vibe Volume</span>
+              <span>Deck Output Volume</span>
               <span>{volume}%</span>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => handleVolumeChange(volume === 0 ? 25 : 0)}
                 className="text-primary hover:scale-110 transition-transform p-1 rounded hover:bg-muted cursor-pointer"
-                title={volume === 0 ? "Unmute" : "Mute"}
               >
-                {volume === 0 ? (
-                  <VolumeX className="w-4 h-4" />
-                ) : (
-                  <Volume2 className="w-4 h-4" />
-                )}
+                {volume === 0 ? <VolumeX className="w-4.5 h-4.5" /> : <Volume2 className="w-4.5 h-4.5" />}
               </button>
               <input
                 type="range"
@@ -357,22 +414,22 @@ export function MusicPlayer() {
             </div>
           </div>
 
-          {/* Vibe Selection */}
+          {/* Vibe Selection Tape Rack */}
           <div className="flex flex-col gap-2">
-            <span className="text-xs text-muted-foreground font-medium">Choose Ambient Melody</span>
+            <span className="text-xs text-muted-foreground font-medium">Select Cassette Tape</span>
             <div className="grid grid-cols-2 gap-2">
               {VIBES.map((v) => (
                 <button
                   key={v.id}
                   onClick={() => handleVibeChange(v.id as VibeType)}
-                  className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl border text-center transition-all duration-300 hover:scale-[1.02] cursor-pointer ${
+                  className={`flex items-center gap-2 p-2 rounded-xl border text-left transition-all duration-300 hover:scale-[1.02] cursor-pointer ${
                     vibe === v.id
                       ? "bg-primary/10 border-primary text-primary shadow-sm"
                       : "bg-background/40 border-border/40 hover:bg-background/60 text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <span className="text-xl">{v.emoji}</span>
-                  <span className="text-[11px] font-semibold leading-none">{v.name}</span>
+                  <span className="text-lg">{v.emoji}</span>
+                  <span className="text-[10px] font-semibold truncate leading-none">{v.name}</span>
                 </button>
               ))}
             </div>
@@ -382,12 +439,10 @@ export function MusicPlayer() {
 
       {/* Control Capsule */}
       <div className="flex items-center gap-1.5 bg-card/90 backdrop-blur border border-border/50 p-1.5 rounded-full shadow-soft hover:shadow-glow transition-all duration-300">
-        {/* Main Play/Pause Button */}
         <button
           onClick={togglePlay}
           className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-all duration-300 cursor-pointer text-primary"
           aria-label={playing ? "Pause music" : "Play music"}
-          title={playing ? "Pause vibes" : "Play magic ✦"}
         >
           {playing ? (
             <div className="flex items-end gap-[3px] h-4">
@@ -404,14 +459,12 @@ export function MusicPlayer() {
               ))}
             </div>
           ) : (
-            <Play className="w-4 h-4 fill-primary" />
+            <Play className="w-4 h-4 fill-primary text-primary" />
           )}
         </button>
 
-        {/* Separator */}
         <span className="w-[1px] h-5 bg-border/40" />
 
-        {/* Settings Toggle Button */}
         <button
           onClick={() => setShowSettings(!showSettings)}
           className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer ${
@@ -419,9 +472,9 @@ export function MusicPlayer() {
               ? "bg-primary text-primary-foreground"
               : "bg-transparent text-primary hover:bg-muted"
           }`}
-          title="Configure vibes"
+          title="Tape deck settings"
         >
-          <Sliders className="w-4 h-4" />
+          <Music className="w-4.5 h-4.5" />
         </button>
       </div>
     </div>
