@@ -321,11 +321,11 @@ function DeviceShowcase() {
           </p>
         </Reveal>
 
-        <div className="flex flex-col md:flex-row items-end justify-center gap-10 md:gap-6">
+        <div className="flex flex-col items-center md:flex-row md:items-end justify-center gap-12 md:gap-6">
           {/* iPhone */}
           <Reveal variant="float-in" delay={0}>
-            <div className="flex flex-col items-center gap-5 group">
-              <div className="relative w-[120px] h-[240px] rounded-[28px] border-4 border-foreground/20 bg-card shadow-soft animate-device-glow group-hover:border-primary/40 transition-colors duration-500 overflow-hidden flex flex-col">
+            <div className="flex flex-col items-center gap-4 group">
+              <div className="relative w-[110px] h-[220px] sm:w-[120px] sm:h-[240px] rounded-[28px] border-4 border-foreground/20 bg-card shadow-soft animate-device-glow group-hover:border-primary/40 transition-colors duration-500 overflow-hidden flex flex-col">
                 {/* Notch */}
                 <div className="w-12 h-4 bg-foreground/15 rounded-b-xl mx-auto mt-1 flex-shrink-0" />
                 {/* Screen content */}
@@ -340,15 +340,15 @@ function DeviceShowcase() {
               <div className="text-center">
                 <p className="font-display text-lg text-twilight">iPhone</p>
                 <p className="text-xs text-muted-foreground italic">{devices[0].sub}</p>
-                <p className="text-[11px] text-muted-foreground/70 mt-1 max-w-[120px] text-center">{devices[0].note}</p>
+                <p className="text-[11px] text-muted-foreground/70 mt-1 max-w-[140px] mx-auto">{devices[0].note}</p>
               </div>
             </div>
           </Reveal>
 
           {/* iPad — taller, center */}
           <Reveal variant="float-in" delay={100}>
-            <div className="flex flex-col items-center gap-5 group md:-mt-8">
-              <div className="relative w-[180px] h-[240px] rounded-[22px] border-4 border-foreground/20 bg-card shadow-glow animate-device-glow group-hover:border-primary/40 transition-colors duration-500 overflow-hidden flex flex-col">
+            <div className="flex flex-col items-center gap-4 group md:-mt-8">
+              <div className="relative w-[170px] h-[230px] sm:w-[180px] sm:h-[240px] rounded-[22px] border-4 border-foreground/20 bg-card shadow-glow animate-device-glow group-hover:border-primary/40 transition-colors duration-500 overflow-hidden flex flex-col">
                 {/* Camera dot */}
                 <div className="w-2 h-2 bg-foreground/15 rounded-full mx-auto mt-2 flex-shrink-0" />
                 {/* Screen */}
@@ -365,17 +365,17 @@ function DeviceShowcase() {
               <div className="text-center">
                 <p className="font-display text-lg text-twilight">iPad</p>
                 <p className="text-xs text-muted-foreground italic">{devices[1].sub}</p>
-                <p className="text-[11px] text-muted-foreground/70 mt-1 max-w-[160px] text-center">{devices[1].note}</p>
+                <p className="text-[11px] text-muted-foreground/70 mt-1 max-w-[170px] mx-auto">{devices[1].note}</p>
               </div>
             </div>
           </Reveal>
 
           {/* MacBook */}
           <Reveal variant="float-in" delay={200}>
-            <div className="flex flex-col items-center gap-5 group">
+            <div className="flex flex-col items-center gap-4 group">
               <div className="flex flex-col items-center">
                 {/* Screen */}
-                <div className="relative w-[220px] h-[140px] rounded-t-xl border-4 border-foreground/20 bg-card shadow-soft animate-device-glow group-hover:border-primary/40 transition-colors duration-500 overflow-hidden flex flex-col">
+                <div className="relative w-[200px] h-[128px] sm:w-[220px] sm:h-[140px] rounded-t-xl border-4 border-foreground/20 bg-card shadow-soft animate-device-glow group-hover:border-primary/40 transition-colors duration-500 overflow-hidden flex flex-col">
                   {/* Menubar */}
                   <div className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/5 border-b border-foreground/10 flex-shrink-0">
                     {["bg-red-400","bg-yellow-400","bg-green-400"].map((c,i)=>(
@@ -390,13 +390,13 @@ function DeviceShowcase() {
                   </div>
                 </div>
                 {/* Hinge + base */}
-                <div className="w-[240px] h-2 bg-foreground/15 rounded-b-sm" />
-                <div className="w-[260px] h-3 bg-foreground/10 rounded-b-xl" />
+                <div className="w-[218px] sm:w-[240px] h-2 bg-foreground/15 rounded-b-sm" />
+                <div className="w-[236px] sm:w-[260px] h-3 bg-foreground/10 rounded-b-xl" />
               </div>
               <div className="text-center">
                 <p className="font-display text-lg text-twilight">MacBook</p>
                 <p className="text-xs text-muted-foreground italic">{devices[2].sub}</p>
-                <p className="text-[11px] text-muted-foreground/70 mt-1 max-w-[180px] text-center">{devices[2].note}</p>
+                <p className="text-[11px] text-muted-foreground/70 mt-1 max-w-[190px] mx-auto">{devices[2].note}</p>
               </div>
             </div>
           </Reveal>
