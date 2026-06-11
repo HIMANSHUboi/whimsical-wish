@@ -1,278 +1,235 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Sparkles } from "@/components/Sparkles";
 import { Reveal } from "@/components/Reveal";
+import { ParallaxTilt } from "@/components/ParallaxTilt";
+import hironoImg from "@/assets/hirono.jpeg";
 
 export const Route = createFileRoute("/wishbook")({
   head: () => ({
     meta: [
-      { title: "Wishbook ✦ Messages for Vanya" },
-      { name: "description", content: "Leave a birthday message for Vanya." },
+      { title: "Hirono ♡ For Vanya" },
+      {
+        name: "description",
+        content: "A soft little corner dedicated to Hirono — Vanya's favourite plush.",
+      },
     ],
   }),
-  component: Wishbook,
+  component: HironoPage,
 });
 
-interface WishEntry {
-  id: string;
-  name: string;
-  message: string;
-  color: string;
-  tilt: number;
-  createdAt: number;
-}
-
-const STORAGE_KEY = "vanya-wishbook-v1";
-const APP_KEY = "lfeiwes4";
-const COLORS = [
-  "bg-rose-50 dark:bg-rose-950/40",
-  "bg-purple-50 dark:bg-purple-950/40",
-  "bg-amber-50 dark:bg-amber-950/40",
-  "bg-sky-50 dark:bg-sky-950/40",
-  "bg-emerald-50 dark:bg-emerald-950/40",
-  "bg-pink-50 dark:bg-pink-950/40",
+const PLUSH_MESSAGES = [
+  "✦ she loves you",
+  "🌸 make a wish!",
+  "🪷 be gentle today",
+  "♡ you're doing great",
+  "✧ the world is soft",
+  "🌙 dream big, little one",
+  "☾ you are enough",
 ];
 
-// Server functions to read/write to the free cloud database
-export const getWishesServer = createServerFn({ method: "GET" }).handler(async () => {
-  try {
-    const listRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${APP_KEY}/vanya_wish_ids`);
-    const listText = await listRes.json();
-    if (!listText) return [];
-    const ids: string[] = JSON.parse(listText);
+const HIRONO_FACTS = [
+  {
+    icon: "🧸",
+    title: "The Original",
+    body: "Hirono is the dreamy plush that started it all — soft, round, and impossibly cute, just like the person who loves it.",
+  },
+  {
+    icon: "🌸",
+    title: "Collector's Heart",
+    body: "Vanya doesn't just love Hirono — she feels it. Every plush she picks is chosen with the same care she gives to everything she loves.",
+  },
+  {
+    icon: "✦",
+    title: "A Quiet Companion",
+    body: "There's something about a plush that understands you without a single word. Hirono is that friend — always there, always soft.",
+  },
+  {
+    icon: "🪷",
+    title: "Same Energy",
+    body: "Gentle. Cozy. A little magical. The Hirono plush and Vanya are cut from the same whimsical cloth.",
+  },
+];
 
-    const fetchPromises = ids.map(async (id) => {
-      try {
-        const wishRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${APP_KEY}/vanya_wish_${id}`);
-        const wishText = await wishRes.json();
-        if (wishText) {
-          return JSON.parse(wishText) as WishEntry;
-        }
-      } catch (err) {
-        console.error(`Error fetching wish ${id}:`, err);
-      }
-      return null;
-    });
+function HironoPage() {
+  const [msgIdx, setMsgIdx] = useState(0);
+  const [wiggling, setWiggling] = useState(false);
+  const [showBubble, setShowBubble] = useState(false);
 
-    const results = await Promise.all(fetchPromises);
-    return results.filter((w): w is WishEntry => w !== null).sort((a, b) => b.createdAt - a.createdAt);
-  } catch (err) {
-    console.error("Error in getWishesServer:", err);
-    return [];
-  }
-});
-
-export const addWishServer = createServerFn({ method: "POST" })
-  .handler(async ({ data }: { data: WishEntry }) => {
-    try {
-      const entry = data;
-      const wishVal = JSON.stringify(entry);
-      await fetch(
-        `https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${APP_KEY}/vanya_wish_${entry.id}/${encodeURIComponent(wishVal)}`,
-        { method: "POST" }
-      );
-
-      const listRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${APP_KEY}/vanya_wish_ids`);
-      const listText = await listRes.json();
-      let ids: string[] = [];
-      if (listText) {
-        try {
-          ids = JSON.parse(listText);
-        } catch {}
-      }
-      ids = [entry.id, ...ids].slice(0, 80);
-
-      const idsVal = JSON.stringify(ids);
-      await fetch(
-        `https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${APP_KEY}/vanya_wish_ids/${encodeURIComponent(idsVal)}`,
-        { method: "POST" }
-      );
-
-      return { success: true };
-    } catch (err) {
-      console.error("Error in addWishServer:", err);
-      return { success: false };
-    }
-  });
-
-export const removeWishServer = createServerFn({ method: "POST" })
-  .handler(async ({ data }: { data: string }) => {
-    try {
-      const id = data;
-      const listRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${APP_KEY}/vanya_wish_ids`);
-      const listText = await listRes.json();
-      if (listText) {
-        let ids: string[] = JSON.parse(listText);
-        ids = ids.filter((currId) => currId !== id);
-        const idsVal = JSON.stringify(ids);
-        await fetch(
-          `https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${APP_KEY}/vanya_wish_ids/${encodeURIComponent(idsVal)}`,
-          { method: "POST" }
-        );
-      }
-      await fetch(
-        `https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${APP_KEY}/vanya_wish_${id}/`,
-        { method: "POST" }
-      );
-      return { success: true };
-    } catch (err) {
-      console.error("Error in removeWishServer:", err);
-      return { success: false };
-    }
-  });
-
-function Wishbook() {
-  const [wishes, setWishes] = useState<WishEntry[]>([]);
-  const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // 1. Load from localStorage for immediate display
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        setWishes(JSON.parse(raw));
-        setLoading(false);
-      }
-    } catch {}
-
-    // 2. Fetch fresh database list in background
-    getWishesServer()
-      .then((serverWishes) => {
-        if (serverWishes) {
-          setWishes(serverWishes);
-          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(serverWishes)); } catch {}
-        }
-      })
-      .catch((err) => console.error("Error fetching db wishes:", err))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const addWish = () => {
-    if (!name.trim() || !message.trim()) return;
-    const entry: WishEntry = {
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      name: name.trim(),
-      message: message.trim(),
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      tilt: Math.round((Math.random() - 0.5) * 5),
-      createdAt: Date.now(),
-    };
-
-    // Optimistic local update
-    const next = [entry, ...wishes];
-    setWishes(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
-
-    // Save to server database in background
-    addWishServer(entry).catch((err) => console.error("Error saving wish:", err));
-
-    setName("");
-    setMessage("");
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("trigger-confetti"));
-    }
-  };
-
-  const removeWish = (id: string) => {
-    // Optimistic local update
-    const next = wishes.filter((w) => w.id !== id);
-    setWishes(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
-
-    // Delete on server database in background
-    removeWishServer(id).catch((err) => console.error("Error deleting wish:", err));
+  const handlePlushClick = () => {
+    setWiggling(true);
+    setShowBubble(true);
+    setMsgIdx((prev) => (prev + 1) % PLUSH_MESSAGES.length);
+    setTimeout(() => setWiggling(false), 500);
+    setTimeout(() => setShowBubble(false), 2800);
   };
 
   return (
-    <section className="relative bg-dreamy py-20 overflow-hidden min-h-[80vh]">
-      <Sparkles count={20} />
-      <div className="relative mx-auto max-w-5xl px-6 space-y-12">
+    <section className="relative py-20 overflow-hidden min-h-[80vh] bg-aurora">
+      <Sparkles count={28} />
+
+      {/* Decorative petal blobs */}
+      <div
+        className="absolute top-0 -left-20 w-72 h-72 rounded-full pointer-events-none opacity-20"
+        style={{ background: "radial-gradient(circle, oklch(0.82 0.12 85) 0%, transparent 70%)" }}
+      />
+      <div
+        className="absolute bottom-0 -right-16 w-64 h-64 rounded-full pointer-events-none opacity-15"
+        style={{ background: "radial-gradient(circle, oklch(0.75 0.12 310) 0%, transparent 70%)" }}
+      />
+
+      <div className="relative mx-auto max-w-5xl px-6 space-y-16">
+
+        {/* Header */}
         <Reveal className="text-center space-y-3">
-          <p className="font-script text-3xl text-primary">write a little something</p>
-          <h1 className="font-display text-5xl md:text-6xl text-twilight">
-            The Wishbook ✦
+          <p className="font-script text-3xl text-primary">a soft little corner for</p>
+          <h1 className="font-display text-5xl md:text-7xl text-twilight leading-[1.05]">
+            Hirono ♡
           </h1>
-          <p className="text-muted-foreground italic">
-            leave a birthday wish — it'll stay right here, pinned to the wall of love.
+          <p className="text-muted-foreground italic max-w-md mx-auto leading-relaxed">
+            The plush that lives in her heart — round, warm, and inexplicably magical.
           </p>
         </Reveal>
 
-        {/* Add wish form */}
-        <Reveal variant="float-in">
-          <div className="rounded-3xl bg-card/80 backdrop-blur border border-border/60 shadow-soft p-6 md:p-8 max-w-2xl mx-auto space-y-5">
-            <p className="font-script text-2xl text-primary">pin your wish ✦</p>
-            <div className="space-y-3">
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="your name ✦"
-                maxLength={50}
-                className="w-full rounded-xl border border-border bg-background/70 px-4 py-3 text-foreground placeholder:italic placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
-              />
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="write your birthday wish for Vanya..."
-                maxLength={300}
-                rows={3}
-                className="w-full rounded-xl border border-border bg-background/70 px-4 py-3 text-foreground placeholder:italic placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
-              />
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">{message.length}/300</span>
+        {/* Hero — Plush photo + interactive mascot */}
+        <div className="grid md:grid-cols-2 gap-14 items-center">
+          {/* Photo */}
+          <Reveal variant="float-in">
+            <ParallaxTilt max={8}>
+              <div className="relative group">
+                <div className="absolute -inset-6 blur-3xl opacity-40 rounded-full animate-float"
+                  style={{ background: "radial-gradient(circle, oklch(0.82 0.12 85), oklch(0.75 0.12 310))" }}
+                />
+                <div className="relative rounded-[2.5rem] overflow-hidden shadow-glow border-4 border-card">
+                  <img
+                    src={hironoImg}
+                    alt="Hirono plush — Vanya's favourite"
+                    className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 animate-shimmer pointer-events-none opacity-50" />
+                  <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-twilight/70 to-transparent">
+                    <p className="font-script text-2xl text-white drop-shadow">
+                      ✦ the plush of her dreams ✦
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </ParallaxTilt>
+          </Reveal>
+
+          {/* Interactive mascot + copy */}
+          <Reveal variant="float-in" delay={150} className="space-y-7">
+            {/* Clickable Hirono mascot */}
+            <div className="flex flex-col items-center gap-3 select-none">
+              <div className="relative inline-block">
+                {/* Speech bubble */}
+                {showBubble && (
+                  <div
+                    className="speech-bubble absolute -top-16 left-1/2 -translate-x-1/2 glass-card rounded-xl px-4 py-2 whitespace-nowrap animate-speech-pop z-10"
+                  >
+                    <p className="font-script text-base text-primary">{PLUSH_MESSAGES[msgIdx]}</p>
+                  </div>
+                )}
                 <button
-                  onClick={addWish}
-                  disabled={!name.trim() || !message.trim()}
-                  className="rounded-full bg-primary text-primary-foreground px-6 py-2.5 shadow-soft hover:scale-105 transition-transform disabled:opacity-40 disabled:cursor-not-allowed font-display"
+                  onClick={handlePlushClick}
+                  aria-label="Poke Hirono"
+                  className={`w-28 h-28 rounded-full overflow-hidden border-4 border-primary/30 shadow-glow focus:outline-none focus:ring-2 focus:ring-primary/40 transition-transform hover:scale-105 ${
+                    wiggling ? "animate-hirono-wiggle" : "animate-hirono-bob"
+                  }`}
                 >
-                  leave a wish ♡
+                  <img
+                    src={hironoImg}
+                    alt="Hirono plush"
+                    className="w-full h-full object-cover"
+                  />
                 </button>
               </div>
+              <p className="text-xs text-muted-foreground italic text-center">
+                tap to hear a little something ✦
+              </p>
             </div>
-          </div>
-        </Reveal>
 
-        {/* Wish wall */}
-        {wishes.length > 0 && (
-          <div className="columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance]">
-            {wishes.map((w, i) => (
-              <Reveal key={w.id} variant="float-in" delay={(i % 6) * 80} className="break-inside-avoid mb-4">
-                <div
-                  className={`relative group/wish rounded-2xl ${w.color} p-6 shadow-soft border border-border/30 transition-transform duration-500 hover:rotate-0 hover:scale-[1.02]`}
-                  style={{ transform: `rotate(${w.tilt}deg)` }}
-                >
-                  <button
-                    onClick={() => removeWish(w.id)}
-                    aria-label="remove wish"
-                    className="absolute -top-2 -right-2 z-10 w-7 h-7 rounded-full bg-card text-primary border border-border shadow-soft opacity-0 group-hover/wish:opacity-100 transition-opacity hover:bg-primary hover:text-primary-foreground text-xs"
-                  >
-                    ✕
-                  </button>
-                  <p className="font-display italic text-lg text-twilight leading-relaxed mb-3">
-                    "{w.message}"
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-script text-sm">
-                      {w.name[0].toUpperCase()}
+            <div className="space-y-4">
+              <p className="font-display italic text-2xl md:text-3xl text-twilight leading-relaxed">
+                "Some things don't need explaining — you just hold them and feel better."
+              </p>
+              <p className="font-script text-xl text-primary">
+                — that's Hirono
+              </p>
+              <p className="text-foreground/70 leading-relaxed">
+                Vanya has a way of loving things deeply and quietly. Her Hirono plush isn't
+                just a soft toy — it's a little universe of comfort she keeps close.
+                Soft around the edges. Full of warmth. Exactly like her.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* Hirono Fact Cards */}
+        <div className="space-y-8">
+          <Reveal>
+            <h2 className="font-display text-4xl text-center text-twilight">
+              Why Hirono? ✦
+            </h2>
+          </Reveal>
+          <div className="grid sm:grid-cols-2 gap-5">
+            {HIRONO_FACTS.map((f, i) => (
+              <Reveal key={i} variant="float-in" delay={i * 90}>
+                <div className="glass-card rounded-2xl p-6 hover:-translate-y-1 transition-all duration-300 hover:shadow-glow group">
+                  <div className="flex items-start gap-4">
+                    <span className="text-3xl mt-0.5 group-hover:scale-110 transition-transform inline-block">
+                      {f.icon}
                     </span>
-                    <p className="font-script text-base text-primary">— {w.name}</p>
+                    <div>
+                      <p className="font-display text-xl text-twilight">{f.title}</p>
+                      <p className="text-sm text-foreground/70 mt-1 leading-relaxed">{f.body}</p>
+                    </div>
                   </div>
                 </div>
               </Reveal>
             ))}
           </div>
-        )}
+        </div>
 
-        {wishes.length === 0 && (
-          <Reveal className="text-center py-10">
-            <p className="text-muted-foreground italic font-display text-xl">
-              no wishes yet — be the first to leave one ✦
-            </p>
-          </Reveal>
-        )}
+        {/* Plush Messages Gallery */}
+        <Reveal className="space-y-6">
+          <h2 className="font-display text-3xl text-center text-twilight">
+            Things Hirono Would Say ✦
+          </h2>
+          <div className="flex flex-wrap justify-center gap-3">
+            {PLUSH_MESSAGES.map((msg, i) => (
+              <span
+                key={i}
+                className="glass-card rounded-full px-5 py-2 font-script text-lg text-primary hover:shadow-glow transition-all duration-300 hover:scale-105 cursor-default"
+                style={{ animationDelay: `${i * 0.1}s` }}
+              >
+                {msg}
+              </span>
+            ))}
+          </div>
+        </Reveal>
+
+        {/* CTA */}
+        <Reveal className="text-center space-y-5 pt-4 border-t border-border/30">
+          <p className="font-display italic text-3xl md:text-4xl text-twilight text-balance max-w-xl mx-auto">
+            "May your life be as soft and full as a Hirono plush."
+          </p>
+          <p className="font-script text-2xl text-primary">— with the softest love ♡</p>
+          <div className="flex flex-wrap justify-center gap-3 pt-2">
+            <Link
+              to="/about"
+              className="rounded-full bg-primary text-primary-foreground px-6 py-2.5 shadow-soft hover:scale-105 transition-transform text-sm"
+            >
+              ✿ About Vanya
+            </Link>
+            <Link
+              to="/lilies"
+              className="rounded-full border border-primary/30 text-primary px-6 py-2.5 hover:bg-primary/5 transition-colors text-sm"
+            >
+              🪷 Lily Pond
+            </Link>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

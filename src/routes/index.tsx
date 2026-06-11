@@ -139,9 +139,9 @@ function Index() {
               },
               {
                 to: "/wishbook",
-                title: "Wishbook",
-                desc: "Leave a birthday message for Vanya.",
-                emoji: "📖",
+                title: "Hirono ♡",
+                desc: "A soft corner for her favourite plush.",
+                emoji: "🧸",
               },
               {
                 to: "/calendar",
@@ -165,9 +165,9 @@ function Index() {
               <Reveal key={i} variant="float-in" delay={i * 80}>
                 <Link
                   to={c.to}
-                  className="block group rounded-2xl bg-card p-6 shadow-soft hover:-translate-y-1 transition-transform border border-border/50"
+                  className="block group rounded-2xl bg-card p-6 shadow-soft hover:-translate-y-2 hover:shadow-glow transition-all duration-300 border border-border/50 hover:border-primary/30"
                 >
-                  <div className="text-3xl text-primary mb-3 group-hover:rotate-12 transition-transform inline-block">
+                  <div className="text-3xl text-primary mb-3 group-hover:rotate-12 group-hover:scale-110 transition-transform inline-block">
                     {c.emoji}
                   </div>
                   <h3 className="font-display text-2xl text-twilight">
@@ -182,6 +182,9 @@ function Index() {
           </div>
         </div>
       </section>
+
+      {/* DEVICE SHOWCASE */}
+      <DeviceShowcase />
     </>
   );
 }
@@ -273,6 +276,133 @@ function LilyOracleWidget() {
           </div>
         </div>
       </Reveal>
+    </section>
+  );
+}
+
+// ── Device Showcase ──────────────────────────────────────────────────────────
+function DeviceShowcase() {
+  const devices = [
+    {
+      label: "iPhone",
+      sub: "held in your hand",
+      note: "The whole garden, in your pocket.",
+      frame: "iphone",
+    },
+    {
+      label: "iPad",
+      sub: "beside your morning tea",
+      note: "Cozy, lush, and made for slow scrolling.",
+      frame: "ipad",
+    },
+    {
+      label: "MacBook",
+      sub: "open on your desk",
+      note: "Every star visible from where you sit.",
+      frame: "macbook",
+    },
+  ];
+
+  return (
+    <section className="py-20 px-6 bg-aurora overflow-hidden">
+      <div className="mx-auto max-w-5xl">
+        <Reveal className="text-center space-y-3 mb-14">
+          <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
+            wherever you are
+          </p>
+          <h2 className="font-display text-4xl md:text-5xl text-twilight">
+            Made for every screen ✦
+          </h2>
+          <p className="text-muted-foreground italic max-w-md mx-auto">
+            Whether you're curled up with your phone or at your desk with a warm cup — this is for you.
+          </p>
+        </Reveal>
+
+        <div className="flex flex-col md:flex-row items-end justify-center gap-10 md:gap-6">
+          {/* iPhone */}
+          <Reveal variant="float-in" delay={0}>
+            <div className="flex flex-col items-center gap-5 group">
+              <div className="relative w-[120px] h-[240px] rounded-[28px] border-4 border-foreground/20 bg-card shadow-soft animate-device-glow group-hover:border-primary/40 transition-colors duration-500 overflow-hidden flex flex-col">
+                {/* Notch */}
+                <div className="w-12 h-4 bg-foreground/15 rounded-b-xl mx-auto mt-1 flex-shrink-0" />
+                {/* Screen content */}
+                <div className="flex-1 bg-dreamy flex flex-col items-center justify-center gap-1 px-2">
+                  <span className="text-2xl animate-hirono-bob inline-block">🧸</span>
+                  <p className="text-[7px] text-center font-script text-primary leading-tight">Vanya ✦</p>
+                  <p className="text-[5px] text-center text-muted-foreground">a whimsy wish</p>
+                </div>
+                {/* Home indicator */}
+                <div className="w-10 h-1 bg-foreground/20 rounded-full mx-auto mb-2 flex-shrink-0" />
+              </div>
+              <div className="text-center">
+                <p className="font-display text-lg text-twilight">iPhone</p>
+                <p className="text-xs text-muted-foreground italic">{devices[0].sub}</p>
+                <p className="text-[11px] text-muted-foreground/70 mt-1 max-w-[120px] text-center">{devices[0].note}</p>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* iPad — taller, center */}
+          <Reveal variant="float-in" delay={100}>
+            <div className="flex flex-col items-center gap-5 group md:-mt-8">
+              <div className="relative w-[180px] h-[240px] rounded-[22px] border-4 border-foreground/20 bg-card shadow-glow animate-device-glow group-hover:border-primary/40 transition-colors duration-500 overflow-hidden flex flex-col">
+                {/* Camera dot */}
+                <div className="w-2 h-2 bg-foreground/15 rounded-full mx-auto mt-2 flex-shrink-0" />
+                {/* Screen */}
+                <div className="flex-1 bg-dreamy flex flex-col items-center justify-center gap-2 px-3">
+                  <span className="text-3xl animate-float inline-block">🪷</span>
+                  <p className="text-[9px] text-center font-script text-primary">Happy Birthday, Vanya</p>
+                  <div className="flex gap-1">
+                    {["✦","♡","✧"].map((s,i)=> (
+                      <span key={i} className="text-[8px] text-primary/60">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="font-display text-lg text-twilight">iPad</p>
+                <p className="text-xs text-muted-foreground italic">{devices[1].sub}</p>
+                <p className="text-[11px] text-muted-foreground/70 mt-1 max-w-[160px] text-center">{devices[1].note}</p>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* MacBook */}
+          <Reveal variant="float-in" delay={200}>
+            <div className="flex flex-col items-center gap-5 group">
+              <div className="flex flex-col items-center">
+                {/* Screen */}
+                <div className="relative w-[220px] h-[140px] rounded-t-xl border-4 border-foreground/20 bg-card shadow-soft animate-device-glow group-hover:border-primary/40 transition-colors duration-500 overflow-hidden flex flex-col">
+                  {/* Menubar */}
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/5 border-b border-foreground/10 flex-shrink-0">
+                    {["bg-red-400","bg-yellow-400","bg-green-400"].map((c,i)=>(
+                      <div key={i} className={`w-2 h-2 rounded-full ${c} opacity-70`} />
+                    ))}
+                  </div>
+                  {/* Content */}
+                  <div className="flex-1 bg-dreamy flex flex-col items-center justify-center gap-1">
+                    <span className="text-xl animate-twinkle inline-block">🌠</span>
+                    <p className="text-[8px] font-script text-primary text-center">Vanya's Whimsical Wish</p>
+                    <p className="text-[6px] text-muted-foreground">16 · 06 · 2026</p>
+                  </div>
+                </div>
+                {/* Hinge + base */}
+                <div className="w-[240px] h-2 bg-foreground/15 rounded-b-sm" />
+                <div className="w-[260px] h-3 bg-foreground/10 rounded-b-xl" />
+              </div>
+              <div className="text-center">
+                <p className="font-display text-lg text-twilight">MacBook</p>
+                <p className="text-xs text-muted-foreground italic">{devices[2].sub}</p>
+                <p className="text-[11px] text-muted-foreground/70 mt-1 max-w-[180px] text-center">{devices[2].note}</p>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
+        <Reveal className="text-center mt-14">
+          <p className="font-script text-2xl text-primary">✦ always with you ✦</p>
+        </Reveal>
+      </div>
     </section>
   );
 }

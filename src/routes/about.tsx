@@ -68,10 +68,10 @@ function About() {
 
           <Reveal variant="float-in" delay={150} className="space-y-5">
             <p className="text-lg leading-relaxed text-foreground/80">
-              I need to edit this text later on till then this is just a sample unlike gpt generated text iykyk .
+              Pretty eyes and cute smile makes world even brighter.
             </p>
             <p className="text-lg leading-relaxed text-foreground/80">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsam consequuntur accusantium molestiae numquam modi sapiente optio enim ex nesciunt. In, consequuntur!.
+              To this very special day where everyone's gaze and love follows only one person.
             </p>
             <p className="text-lg leading-relaxed text-foreground/80">
               Twenty-two years of turning ordinary moments into constellations.
@@ -113,26 +113,44 @@ function About() {
             <p className="font-script text-2xl text-primary">twenty-two things she is</p>
             <ul className="space-y-2 text-foreground/75">
               {[
-                "Endlessly curious about things that shimmer",
-                "The kind of person who makes rooms feel warmer",
-                "A collector of songs that hit exactly right",
-                "Someone who believes in small rituals and big skies",
-                "A little bit moon, a little bit sun, entirely herself",
+                "Someone who turns ordinary moments into tiny rituals",
+                "A matcha girl, always iced, foamy, and unhurried",
+                "The kind of friend who remembers the small things",
+                "A Gemini who holds both sunshine and moonlight",
+                "Collector of plushes, soft things, and softer feelings",
+                "Hirono's biggest fan and for very good reason",
+                "Someone who can make a room feel warmer just by entering it",
+                "A believer in tarot, signs, and beautiful coincidences",
+                "The girl who reads the moon like a book before bed",
+                "Pinterest-core in the best possible way",
+                "A lover of songs that feel like a warm hug",
+                "Someone who makes lavender skies feel personal",
+                "Quietly mystical, loudly kind",
+                "A collector of vibes that shimmer",
+                "The one whose aesthetic is both dreamy and intentional",
+                "Someone who finds beauty in vintage, worn, and loved things",
+                "A person who gives the best kind of thoughtful silences",
+                "The energy of a lily rooted deep, floating gracefully",
+                "Someone whose laugh changes the entire vibe of a room",
+                "A little bit moon, a little bit sun entirely herself",
+                "The kind of rare the world needs more of",
+                "Twenty-two years of magic, and only just beginning",
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <span className="text-primary mt-1 shrink-0">✦</span>
+                  <span className="text-primary mt-1 shrink-0 text-xs">{i + 1}.</span>
                   <span className="italic">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
+
           <ParallaxTilt max={6} className="order-1 md:order-2">
             <div className="relative group">
               <div className="absolute -inset-4 bg-primary/20 blur-3xl opacity-50 rounded-full" />
               <div className="relative rounded-[2rem] overflow-hidden border-4 border-card shadow-soft">
                 <LightboxImage
                   src={vanyaGreenShirt}
-                  alt="Vanya — green shirt, natural light"
+                  alt="Vanya — Himanshu, natural light"
                   className="w-full h-auto object-cover transition-transform duration-[1200ms] group-hover:scale-105"
                 />
                 <div className="absolute inset-0 animate-shimmer pointer-events-none opacity-40" />

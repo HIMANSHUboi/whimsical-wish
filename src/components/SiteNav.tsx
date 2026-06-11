@@ -9,7 +9,7 @@ const links = [
   { to: "/tarot", label: "Tarot" },
   { to: "/starmap", label: "Star Map" },
   { to: "/moodboard", label: "Moodboard" },
-  { to: "/wishbook", label: "Wishbook" },
+  { to: "/wishbook", label: "Hirono ♡" },
   { to: "/calendar", label: "The Day" },
   { to: "/wishes", label: "A Wish" },
 ] as const;
@@ -51,8 +51,9 @@ export function SiteNav() {
     <>
       <header className="sticky top-0 z-40 backdrop-blur-md bg-background/70 border-b border-border/50">
         <nav className="mx-auto max-w-6xl flex items-center justify-between px-6 py-4">
-          <Link to="/" className="font-script text-2xl text-primary">
+          <Link to="/" className="font-script text-2xl text-primary flex items-center gap-1.5 hover:opacity-80 transition-opacity">
             Vanya ✦
+            <span className="text-sm animate-hirono-bob inline-block" title="Hirono says hi!">🧸</span>
           </Link>
 
           {/* Desktop nav */}
@@ -61,8 +62,8 @@ export function SiteNav() {
               <li key={l.to}>
                 <Link
                   to={l.to}
-                  className="text-foreground/70 hover:text-primary transition-colors relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-px after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left"
-                  activeProps={{ className: "text-primary font-medium" }}
+                  className="text-foreground/70 hover:text-primary transition-colors relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-[2px] after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left"
+                  activeProps={{ className: "text-primary font-semibold after:scale-x-100 after:origin-bottom-left" }}
                 >
                   {l.label}
                 </Link>

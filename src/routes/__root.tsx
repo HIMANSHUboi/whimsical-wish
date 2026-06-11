@@ -18,6 +18,7 @@ import { LightboxProvider } from "@/components/Lightbox";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { FloatingElements } from "@/components/FloatingElements";
 import { CountdownLockScreen } from "@/components/CountdownLockScreen";
+import { DeviceGreeting } from "@/components/DeviceGreeting";
 
 import appCss from "../styles.css?url";
 
@@ -156,6 +157,7 @@ function RootComponent() {
                 <Outlet />
               </main>
               <SiteFooter />
+              <DeviceGreeting />
             </>
           ) : (
             <CountdownLockScreen onUnlock={handleUnlock} />
