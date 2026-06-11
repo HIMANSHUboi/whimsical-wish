@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Sparkles } from "@/components/Sparkles";
 import { Reveal } from "@/components/Reveal";
 import { ParallaxTilt } from "@/components/ParallaxTilt";
+import { MatchaWhisk } from "@/components/MatchaWhisk";
 import matchaCart from "@/assets/matcha-cart.png";
 import matchaTime from "@/assets/matcha-time.png";
 
@@ -76,6 +77,9 @@ function Matcha() {
             </div>
           </Reveal>
         </div>
+
+        {/* Interactive Whisking Altar */}
+        <MatchaWhisk />
 
         {/* Floating second image */}
         <div className="grid md:grid-cols-5 gap-10 items-center">
