@@ -159,6 +159,83 @@ function About() {
           </ParallaxTilt>
         </Reveal>
 
+        {/* Vanya's Soundtrack — Top 22 Playlist */}
+        <Reveal variant="float-in" className="space-y-6">
+          <div className="text-center space-y-2">
+            <p className="font-script text-2xl text-primary">the soundtrack of her soul</p>
+            <h2 className="font-display text-3xl md:text-4xl text-twilight">Vanya's Top 22 ✦</h2>
+            <p className="text-muted-foreground italic text-sm">22 songs for 22 years — the playlist that feels like her</p>
+          </div>
+
+          <div className="rounded-3xl bg-card/80 backdrop-blur border border-border/50 shadow-soft overflow-hidden">
+            {/* Vinyl header */}
+            <div className="bg-gradient-to-r from-primary/10 via-gold/10 to-primary/10 px-6 py-4 border-b border-border/30 flex items-center gap-4">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-gold flex items-center justify-center text-2xl shadow-glow shrink-0">
+                🎵
+              </div>
+              <div>
+                <p className="font-display text-lg text-twilight font-semibold">Vanya's Mix — Vol. 22</p>
+                <p className="text-xs text-muted-foreground">22 tracks · curated with love</p>
+              </div>
+            </div>
+
+            {/* Track list */}
+            <div className="divide-y divide-border/30">
+              {[
+                { title: "Kiss of Life", artist: "Sade", note: "because it's the kind of song that holds you" },
+                { title: "Reflections", artist: "The Neighbourhood", note: "for the girl who sees beauty in shadows" },
+                { title: "Those Eyes", artist: "New West", note: "you know exactly why" },
+                { title: "Cigarettes After Sex", artist: "Each Time You Fall in Love", note: "slow, dreamy, and a little melancholic" },
+                { title: "Pink + White", artist: "Frank Ocean", note: "soft gold mornings and everything in bloom" },
+                { title: "Cherry Wine", artist: "Hozier", note: "for when the world feels tender" },
+                { title: "Ivy", artist: "Taylor Swift", note: "the folklore track that understands her soul" },
+                { title: "Notion", artist: "Tash Sultana", note: "because she contains multitudes" },
+                { title: "Electric Love", artist: "BØRNS", note: "sparkly, buzzy, exactly her vibe" },
+                { title: "Matcha Latte", artist: "Chloé Gallardo", note: "yes, it exists. yes, it's perfect." },
+                { title: "Moon River", artist: "Audrey Hepburn", note: "vintage, dreamy, and always classic" },
+                { title: "Ceilings", artist: "Lizzy McAlpine", note: "the kind of ache that's beautiful" },
+                { title: "Lavender Haze", artist: "Taylor Swift", note: "lavender everything, always" },
+                { title: "Ribs", artist: "Lorde", note: "turning 22 and feeling every second of it" },
+                { title: "Dreams", artist: "Fleetwood Mac", note: "timeless. just like her." },
+                { title: "Godspeed", artist: "Frank Ocean", note: "a quiet blessing disguised as a song" },
+                { title: "Sunset Lover", artist: "Petit Biscuit", note: "golden hour in sound form" },
+                { title: "Sofia", artist: "Clairo", note: "soft-spoken and unforgettable" },
+                { title: "Feels Like We Only Go Backwards", artist: "Tame Impala", note: "psychedelic and tender" },
+                { title: "505", artist: "Arctic Monkeys", note: "the bridge. you know the one." },
+                { title: "Homesick", artist: "Dua Lipa", note: "distance can't dim what's real" },
+                { title: "Happy Birthday", artist: "Altered Images", note: "because it IS your day, fairy girl ✦" },
+              ].map((track, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-4 px-6 py-3 group hover:bg-primary/5 transition-colors"
+                >
+                  <span className="text-xs text-muted-foreground/60 w-5 text-right font-mono shrink-0">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
+                      {track.title}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {track.artist} <span className="text-primary/40">·</span> <span className="italic">{track.note}</span>
+                    </p>
+                  </div>
+                  <div className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-xs text-primary">♫</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Footer */}
+            <div className="bg-gradient-to-r from-primary/5 via-transparent to-gold/5 px-6 py-3 border-t border-border/30">
+              <p className="text-[10px] text-muted-foreground/60 text-center tracking-wider uppercase">
+                ✦ curated for vanya bharti · happy 22nd birthday ✦
+              </p>
+            </div>
+          </div>
+        </Reveal>
+
         {/* CTA */}
         <Reveal className="text-center space-y-6 pt-4 border-t border-border/30">
           <p className="font-display italic text-3xl md:text-4xl text-twilight text-balance max-w-2xl mx-auto">

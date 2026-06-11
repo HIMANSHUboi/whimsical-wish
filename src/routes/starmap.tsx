@@ -122,6 +122,66 @@ function StarMap() {
   const [dimensions, setDimensions] = useState({ w: 600, h: 500 });
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Game mode state
+  const [gameMode, setGameMode] = useState(false);
+  const [gameTarget, setGameTarget] = useState(0); // which constellation to trace
+  const [tappedStars, setTappedStars] = useState<number[]>([]);
+  const [gameComplete, setGameComplete] = useState(false);
+  const [gameFeedback, setGameFeedback] = useState<string | null>(null);
+  const [completedConsts, setCompletedConsts] = useState<Set<number>>(new Set());
+
+  const REWARD_MESSAGES = [
+    "✦ Gemini traced! The twins shine for you tonight. ♊",
+    "✦ Virgo completed! Grace and precision, just like you. ♍",
+    "✦ Leo conquered! The lion roars with pride. ♌",
+    "✦ Polaris found! Your north star will always guide you. ⭐",
+    "✦ Boötes illuminated! Arcturus blazes just for you. ✦",
+  ];
+
+  const startGame = (constIndex: number) => {
+    setGameMode(true);
+    setGameTarget(constIndex);
+    setTappedStars([]);
+    setGameComplete(false);
+    setGameFeedback(null);
+    setActiveConst(constIndex);
+  };
+
+  const handleGameStarTap = (starIndex: number) => {
+    if (gameComplete) return;
+    const target = CONSTELLATIONS[gameTarget];
+    const expectedNext = tappedStars.length;
+
+    // Check if this is the correct next star
+    // For simplicity, the correct order is: stars in array order (0, 1, 2, 3...)
+    if (starIndex === expectedNext) {
+      const next = [...tappedStars, starIndex];
+      setTappedStars(next);
+      setGameFeedback(null);
+
+      // Check if all stars are tapped
+      if (next.length === target.stars.length) {
+        setGameComplete(true);
+        setCompletedConsts(prev => new Set([...prev, gameTarget]));
+        setGameFeedback(REWARD_MESSAGES[gameTarget] || "✦ Constellation traced!");
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("trigger-confetti"));
+        }
+      }
+    } else {
+      // Wrong star — pulse feedback
+      setGameFeedback("not quite... try the next star in order ✦");
+      setTimeout(() => setGameFeedback(null), 1500);
+    }
+  };
+
+  const exitGame = () => {
+    setGameMode(false);
+    setTappedStars([]);
+    setGameComplete(false);
+    setGameFeedback(null);
+  };
+
   // Draw on canvas
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -275,7 +335,7 @@ function StarMap() {
 
         {/* Constellation details */}
         <div className="min-h-[100px]">
-          {activeData ? (
+          {activeData && !gameMode ? (
             <Reveal className="mx-auto max-w-2xl text-center space-y-3 animate-fade-up">
               <p className="font-display text-3xl text-gold">
                 {activeData.emoji} {activeData.name}
@@ -284,30 +344,118 @@ function StarMap() {
                 {activeData.meaning}
               </p>
             </Reveal>
-          ) : (
+          ) : !gameMode ? (
             <p className="text-center text-white/40 italic animate-fade-up">
               ✦ tap a constellation label to learn its meaning
             </p>
-          )}
+          ) : null}
         </div>
 
-        {/* Constellations grid */}
-        <div className="grid sm:grid-cols-3 md:grid-cols-5 gap-3">
-          {CONSTELLATIONS.map((c, ci) => (
-            <button
-              key={ci}
-              onClick={() => setActiveConst(activeConst === ci ? null : ci)}
-              className={`rounded-2xl border p-4 text-center transition-all duration-300 hover:scale-105 ${
-                activeConst === ci
-                  ? "bg-white/15 border-white/30 shadow-glow"
-                  : "bg-white/5 border-white/10 hover:bg-white/10"
-              }`}
-            >
-              <div className="text-3xl mb-2">{c.emoji}</div>
-              <p className="text-sm font-display text-white/90">{c.name}</p>
-            </button>
-          ))}
-        </div>
+        {/* ═══ TRACE THE CONSTELLATION ═══ */}
+        <Reveal variant="float-in" className="space-y-6">
+          <div className="text-center space-y-2">
+            <p className="font-script text-2xl text-gold">a little game for you</p>
+            <h2 className="font-display text-3xl text-white">Trace the Constellations ✦</h2>
+            <p className="text-white/50 italic text-sm">tap the stars in order to draw the constellation lines</p>
+          </div>
+
+          {!gameMode ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+              {CONSTELLATIONS.map((c, ci) => (
+                <button
+                  key={ci}
+                  onClick={() => startGame(ci)}
+                  className={`rounded-2xl border p-4 text-center transition-all duration-300 hover:scale-105 cursor-pointer ${
+                    completedConsts.has(ci)
+                      ? "bg-gold/20 border-gold/50 shadow-glow"
+                      : "bg-white/5 border-white/10 hover:bg-white/10"
+                  }`}
+                >
+                  <div className="text-3xl mb-2">{c.emoji}</div>
+                  <p className="text-sm font-display text-white/90">{c.name}</p>
+                  {completedConsts.has(ci) && (
+                    <p className="text-[9px] text-gold mt-1 uppercase tracking-wider">✓ traced</p>
+                  )}
+                  <p className="text-[9px] text-white/40 mt-0.5">{c.stars.length} stars</p>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {/* Game panel */}
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-6 text-center space-y-4">
+                <div className="flex items-center justify-between">
+                  <button onClick={exitGame} className="text-xs text-white/50 hover:text-white transition-colors cursor-pointer">← back</button>
+                  <p className="font-display text-xl text-gold">
+                    {CONSTELLATIONS[gameTarget].emoji} Tracing: {CONSTELLATIONS[gameTarget].name}
+                  </p>
+                  <span className="text-xs text-white/50">{tappedStars.length}/{CONSTELLATIONS[gameTarget].stars.length}</span>
+                </div>
+
+                {/* Progress bar */}
+                <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-gold to-gold/60 rounded-full transition-all duration-500"
+                    style={{ width: `${(tappedStars.length / CONSTELLATIONS[gameTarget].stars.length) * 100}%` }}
+                  />
+                </div>
+
+                {/* Star buttons grid */}
+                <div className="flex flex-wrap justify-center gap-3 py-4">
+                  {CONSTELLATIONS[gameTarget].stars.map((star, si) => {
+                    const isTapped = tappedStars.includes(si);
+                    const isNext = si === tappedStars.length;
+                    return (
+                      <button
+                        key={si}
+                        onClick={() => handleGameStarTap(si)}
+                        className={`w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300 cursor-pointer text-sm font-bold ${
+                          isTapped
+                            ? "bg-gold/30 border-gold text-gold scale-110 shadow-glow"
+                            : isNext
+                            ? "bg-white/10 border-white/40 text-white animate-pulse hover:bg-white/20"
+                            : "bg-white/5 border-white/15 text-white/40 hover:bg-white/10 hover:border-white/30"
+                        }`}
+                        disabled={isTapped}
+                        title={`Star ${si + 1}${star.bright ? " (bright)" : ""}`}
+                      >
+                        {isTapped ? "✦" : si + 1}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Feedback */}
+                {gameFeedback && (
+                  <p className={`text-sm animate-fade-up font-medium ${
+                    gameComplete ? "text-gold font-display text-lg" : "text-white/60 italic"
+                  }`}>
+                    {gameFeedback}
+                  </p>
+                )}
+
+                {gameComplete && (
+                  <div className="space-y-3 animate-fade-up">
+                    <p className="text-white/60 italic text-sm">{CONSTELLATIONS[gameTarget].meaning}</p>
+                    <button
+                      onClick={exitGame}
+                      className="px-5 py-2 rounded-full border border-gold/40 text-gold text-xs font-semibold hover:bg-gold/10 transition-colors cursor-pointer"
+                    >
+                      trace another constellation ✦
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Completion counter */}
+              {completedConsts.size > 0 && (
+                <p className="text-center text-xs text-white/40">
+                  {completedConsts.size} of {CONSTELLATIONS.length} constellations traced ✦
+                </p>
+              )}
+            </div>
+          )}
+        </Reveal>
 
         {/* Poetic footer */}
         <Reveal className="text-center pt-8 border-t border-white/10">
@@ -322,3 +470,4 @@ function StarMap() {
     </section>
   );
 }
+

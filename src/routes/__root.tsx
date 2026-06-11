@@ -19,6 +19,7 @@ import { ScrollProgress } from "@/components/ScrollProgress";
 import { FloatingElements } from "@/components/FloatingElements";
 import { CountdownLockScreen } from "@/components/CountdownLockScreen";
 import { DeviceGreeting } from "@/components/DeviceGreeting";
+import { FortuneCookie } from "@/components/FortuneCookie";
 
 import appCss from "../styles.css?url";
 
@@ -164,6 +165,7 @@ function RootComponent() {
           )}
         </div>
         <MusicPlayer />
+        <FortuneCookie />
       </LightboxProvider>
     </QueryClientProvider>
   );

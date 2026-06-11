@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Sparkles } from "@/components/Sparkles";
 import { Reveal } from "@/components/Reveal";
 import { CountdownTimer } from "@/components/CountdownTimer";
+import { BirthdayCake } from "@/components/BirthdayCake";
 
 export const Route = createFileRoute("/calendar")({
   head: () => ({
@@ -68,6 +69,18 @@ function CalendarPage() {
                 );
               })}
             </div>
+          </div>
+        </Reveal>
+
+        {/* Interactive Birthday Cake */}
+        <Reveal variant="float-in" delay={300}>
+          <div className="space-y-4 text-center">
+            <p className="font-script text-2xl text-primary">blow out the candles ✦</p>
+            <h2 className="font-display text-3xl text-twilight">Make a Wish, Vanya</h2>
+            <p className="text-muted-foreground italic text-sm">tap each candle to blow it out — all 22 for a surprise</p>
+          </div>
+          <div className="mt-8">
+            <BirthdayCake />
           </div>
         </Reveal>
 

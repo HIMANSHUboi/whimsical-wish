@@ -7,6 +7,7 @@ import { Sparkles } from "@/components/Sparkles";
 import { Reveal } from "@/components/Reveal";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { LightboxImage } from "@/components/Lightbox";
+import { ShootingStars } from "@/components/ShootingStars";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,8 +27,10 @@ function Index() {
     <>
       {/* HERO */}
       <section className="relative overflow-hidden bg-dreamy">
+        <ShootingStars />
         <Sparkles count={30} />
-        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center relative">
+        <p className="absolute top-4 left-1/2 -translate-x-1/2 z-[2] text-[10px] text-muted-foreground/50 tracking-widest uppercase pointer-events-none animate-pulse">click anywhere for a shooting star ✦</p>
+        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center relative z-[2]">
           <div className="animate-fade-up space-y-6">
             <p className="font-script text-3xl text-primary">
               a little wish for you
