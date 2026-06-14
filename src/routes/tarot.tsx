@@ -3,6 +3,21 @@ import { useState } from "react";
 import { Sparkles } from "@/components/Sparkles";
 import { ParallaxTilt } from "@/components/ParallaxTilt";
 import { Reveal } from "@/components/Reveal";
+import { X } from "lucide-react";
+
+// Import Tarot Card illustrations
+import tarotStar from "@/assets/tarot-star.jpeg";
+import tarotMoon from "@/assets/tarot-moon.jpeg";
+import tarotSun from "@/assets/tarot-sun.jpeg";
+import tarotLovers from "@/assets/tarot-lovers.jpeg";
+import tarotWorld from "@/assets/tarot-world.jpeg";
+import tarotEmpress from "@/assets/tarot-empress.png";
+import tarotMagician from "@/assets/tarot-magician.png";
+import tarotHighPriestess from "@/assets/tarot-high-priestess.png";
+import tarotWheelOfFortune from "@/assets/tarot-wheel-of-fortune.png";
+import tarotStrength from "@/assets/tarot-strength.png";
+import tarotTemperance from "@/assets/tarot-temperance.png";
+import tarotChariot from "@/assets/tarot-chariot.png";
 
 export const Route = createFileRoute("/tarot")({
   head: () => ({
@@ -15,18 +30,18 @@ export const Route = createFileRoute("/tarot")({
 });
 
 const cards = [
-  { name: "The Star", emoji: "✦", meaning: "Hope, renewal, and a year of soft light ahead.", detail: "The Star brings healing and serenity. After storms, you find calm waters and a sky full of promises. Your wish is heard by the universe." },
-  { name: "The Moon", emoji: "☾", meaning: "Trust the mystery — your intuition is golden.", detail: "The Moon illuminates what hides in shadow. Your dreams carry messages. Trust the pull of the tides within you." },
-  { name: "The Sun", emoji: "☀", meaning: "Joy is finding you everywhere this year.", detail: "Radiance and vitality. Children dance under the Sun — and so shall you. This is a year of golden, unguarded happiness." },
-  { name: "The Empress", emoji: "♛", meaning: "Abundance, beauty, and creative blooming.", detail: "Lush. Fertile. Overflowing. The Empress asks you to receive all that life is offering you right now. You are worthy of softness." },
-  { name: "The Lovers", emoji: "♡", meaning: "Love in every form gathers around you.", detail: "Not just romance — this is a card of alignment. Your values, your heart, your choices. When they align, magic unfolds." },
-  { name: "The World", emoji: "✧", meaning: "Completion — and a brand new chapter.", detail: "You have arrived. Take a breath and feel how far you've come. The World card signals that a beautiful cycle is complete." },
-  { name: "The Magician", emoji: "⚡", meaning: "You have everything you need. Create.", detail: "All four elements rest on the Magician's table — fire, water, air, earth. You are the conduit. What will you build?" },
-  { name: "The High Priestess", emoji: "🌙", meaning: "Deep knowing lives in you. Trust it.", detail: "She sits between the pillars of mystery, veiled and knowing. The answers you seek are already inside you." },
-  { name: "Wheel of Fortune", emoji: "✸", meaning: "A beautiful turn of fate awaits you.", detail: "The wheel spins, and for you, it rises. This is a moment of lucky change, of alignment with something larger than yourself." },
-  { name: "Strength", emoji: "🦁", meaning: "Gentle power. You are stronger than you know.", detail: "Not brute force — this is the strength of compassion, patience, and heart. You tame the lion with love." },
-  { name: "Temperance", emoji: "⚖", meaning: "Balance is coming — harmony in all things.", detail: "Pour between cups, mixing and blending. Temperance is the art of finding your middle path — the one that feels like home." },
-  { name: "The Chariot", emoji: "⭐", meaning: "Victory through willpower. Keep going, queen.", detail: "Two opposing forces, guided by one will. You are in the driver's seat. Determination is your compass." },
+  { name: "The Star", emoji: "✦", meaning: "Hope, renewal, and a year of soft light ahead.", detail: "The Star brings healing and serenity. After storms, you find calm waters and a sky full of promises. Your wish is heard by the universe.", image: tarotStar },
+  { name: "The Moon", emoji: "☾", meaning: "Trust the mystery — your intuition is golden.", detail: "The Moon illuminates what hides in shadow. Your dreams carry messages. Trust the pull of the tides within you.", image: tarotMoon },
+  { name: "The Sun", emoji: "☀", meaning: "Joy is finding you everywhere this year.", detail: "Radiance and vitality. Children dance under the Sun — and so shall you. This is a year of golden, unguarded happiness.", image: tarotSun },
+  { name: "The Empress", emoji: "♛", meaning: "Abundance, beauty, and creative blooming.", detail: "Lush. Fertile. Overflowing. The Empress asks you to receive all that life is offering you right now. You are worthy of softness.", image: tarotEmpress },
+  { name: "The Lovers", emoji: "♡", meaning: "Love in every form gathers around you.", detail: "Not just romance — this is a card of alignment. Your values, your heart, your choices. When they align, magic unfolds.", image: tarotLovers },
+  { name: "The World", emoji: "✧", meaning: "Completion — and a brand new chapter.", detail: "You have arrived. Take a breath and feel how far you've come. The World card signals that a beautiful cycle is complete.", image: tarotWorld },
+  { name: "The Magician", emoji: "⚡", meaning: "You have everything you need. Create.", detail: "All four elements rest on the Magician's table — fire, water, air, earth. You are the conduit. What will you build?", image: tarotMagician },
+  { name: "The High Priestess", emoji: "🌙", meaning: "Deep knowing lives in you. Trust it.", detail: "She sits between the pillars of mystery, veiled and knowing. The answers you seek are already inside you.", image: tarotHighPriestess },
+  { name: "Wheel of Fortune", emoji: "✸", meaning: "A beautiful turn of fate awaits you.", detail: "The wheel spins, and for you, it rises. This is a moment of lucky change, of alignment with something larger than yourself.", image: tarotWheelOfFortune },
+  { name: "Strength", emoji: "🦁", meaning: "Gentle power. You are stronger than you know.", detail: "Not brute force — this is the strength of compassion, patience, and heart. You tame the lion with love.", image: tarotStrength },
+  { name: "Temperance", emoji: "⚖", meaning: "Balance is coming — harmony in all things.", detail: "Pour between cups, mixing and blending. Temperance is the art of finding your middle path — the one that feels like home.", image: tarotTemperance },
+  { name: "The Chariot", emoji: "⭐", meaning: "Victory through willpower. Keep going, queen.", detail: "Two opposing forces, guided by one will. You are in the driver's seat. Determination is your compass.", image: tarotChariot },
 ];
 
 type SpreadCard = { index: number; position: string; flipped: boolean };
@@ -44,6 +59,7 @@ function Tarot() {
   const [tab, setTab] = useState<"daily" | "spread">("daily");
   const [dailyFlipped, setDailyFlipped] = useState(false);
   const [dailyCopied, setDailyCopied] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<typeof cards[0] | null>(null);
 
   const dailyIndex = getDailyCardIndex();
   const dailyCard = cards[dailyIndex];
@@ -101,7 +117,7 @@ function Tarot() {
       <Sparkles count={40} />
       <div className="relative mx-auto max-w-5xl px-6 text-center space-y-10 animate-fade-up">
         <p className="font-script text-3xl text-primary animate-pulse">a card for you</p>
-        <h1 className="font-display text-5xl md:text-6xl text-balance text-twilight">The Tarot Garden</h1>
+        <h1 className="font-display text-5xl md:text-6xl text-balance text-twilight animate-fade-in">The Tarot Garden</h1>
 
         {/* Tab switcher */}
         <div className="flex justify-center gap-3">
@@ -137,11 +153,15 @@ function Tarot() {
 
             <div className="flex justify-center">
               <div className="flex flex-col items-center gap-4">
-                <ParallaxTilt max={12} className="perspective-800 w-48 h-72">
+                <ParallaxTilt max={12} className="perspective-800 w-52 h-80">
                   <div
                     className="relative w-full h-full preserve-3d transition-transform duration-700 ease-out cursor-pointer"
                     style={{ transform: dailyFlipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
-                    onClick={() => setDailyFlipped(true)}
+                    onClick={() => {
+                      if (!dailyFlipped) {
+                        setDailyFlipped(true);
+                      }
+                    }}
                   >
                     {/* Card Back */}
                     <div className="absolute inset-0 backface-hidden rounded-2xl border-2 border-gold/50 shadow-glow flex items-center justify-center" style={{ background: "linear-gradient(135deg, #3b0764 0%, #1e1b4b 100%)" }}>
@@ -153,10 +173,30 @@ function Tarot() {
                       <div className="absolute inset-3 border border-gold/25 rounded-xl" />
                     </div>
                     {/* Card Front */}
-                    <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl border-2 border-gold/60 bg-gradient-to-br from-purple-900 to-indigo-950 shadow-glow flex flex-col items-center justify-center p-6 text-center">
-                      <div className="text-6xl text-gold mb-4 animate-bounce-in">{dailyCard.emoji}</div>
-                      <p className="font-display text-2xl text-gold mb-3">{dailyCard.name}</p>
-                      <p className="text-sm text-white/90 italic leading-relaxed">{dailyCard.meaning}</p>
+                    <div
+                      onClick={(e) => {
+                        if (dailyFlipped) {
+                          e.stopPropagation();
+                          setSelectedCard(dailyCard);
+                        }
+                      }}
+                      className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl border-2 border-gold/60 overflow-hidden bg-gradient-to-br from-purple-900 to-indigo-950 shadow-glow flex flex-col justify-end cursor-zoom-in group/card"
+                    >
+                      {dailyCard.image && (
+                        <img src={dailyCard.image} alt={dailyCard.name} className="absolute inset-0 w-full h-full object-cover opacity-85 transition-transform duration-500 group-hover/card:scale-105" />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                      
+                      <div className="absolute inset-0 bg-black/70 backdrop-blur-xs opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center">
+                        <div className="text-4xl text-gold mb-2">{dailyCard.emoji}</div>
+                        <p className="font-display text-lg text-gold mb-2">{dailyCard.name}</p>
+                        <p className="text-xs text-white/90 italic leading-relaxed">{dailyCard.meaning}</p>
+                        <p className="text-[10px] text-gold/80 mt-2">Click to open full card ✦</p>
+                      </div>
+
+                      <div className="relative z-10 bg-black/60 backdrop-blur-xs border-t border-gold/30 py-2.5 text-center">
+                        <p className="font-display text-sm tracking-wider text-gold uppercase">{dailyCard.name}</p>
+                      </div>
                       <div className="absolute -inset-1 rounded-2xl bg-gold/10 blur-xl -z-10 animate-glow-pulse" />
                     </div>
                   </div>
@@ -164,7 +204,7 @@ function Tarot() {
 
                 {dailyFlipped && (
                   <div className="max-w-sm text-center space-y-4 animate-fade-up">
-                    <p className="text-foreground/80 text-sm leading-relaxed italic">
+                    <p className="text-foreground/85 text-sm leading-relaxed italic">
                       {dailyCard.detail}
                     </p>
                     <button
@@ -207,22 +247,41 @@ function Tarot() {
                     return (
                       <div key={i} className="flex flex-col items-center gap-3">
                         <p className="text-xs uppercase tracking-[0.25em] text-primary/80 font-medium">{posLabels[s.position]}</p>
-                        <ParallaxTilt max={12} className="perspective-800 w-44 h-64 sm:w-52 sm:h-72">
+                        <ParallaxTilt max={12} className="perspective-800 w-44 h-64 sm:w-52 sm:h-76">
                           <div className="relative w-full h-full preserve-3d transition-transform duration-700 ease-out"
                             style={{ transform: s.flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}>
                             {/* Card Back */}
                             <div className="absolute inset-0 backface-hidden rounded-2xl border-2 border-gold/50 shadow-glow flex items-center justify-center cursor-pointer" style={{ background: "linear-gradient(135deg, #3b0764 0%, #1e1b4b 100%)" }}>
                               <div className="text-center space-y-3">
                                 <div className="text-5xl text-gold animate-float" style={{ animationDelay: `${i * 0.5}s` }}>✦</div>
-                                <p className="font-script text-lg text-gold/90">tap to reveal</p>
+                                <p className="font-script text-lg text-gold/90">revealing...</p>
                               </div>
                               <div className="absolute inset-3 border border-gold/25 rounded-xl" />
                             </div>
                             {/* Card Front */}
-                            <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl border-2 border-gold/60 bg-gradient-to-br from-purple-900 to-indigo-950 shadow-glow flex flex-col items-center justify-center p-6 text-center">
-                              <div className="text-5xl sm:text-6xl text-gold mb-4 animate-bounce-in">{card.emoji}</div>
-                              <p className="font-display text-xl sm:text-2xl text-gold mb-3">{card.name}</p>
-                              <p className="text-sm text-white/90 italic leading-relaxed">{card.meaning}</p>
+                            <div
+                              onClick={() => {
+                                if (s.flipped) {
+                                  setSelectedCard(card);
+                                }
+                              }}
+                              className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl border-2 border-gold/60 overflow-hidden bg-gradient-to-br from-purple-900 to-indigo-950 shadow-glow flex flex-col justify-end cursor-zoom-in group/card"
+                            >
+                              {card.image && (
+                                <img src={card.image} alt={card.name} className="absolute inset-0 w-full h-full object-cover opacity-85 transition-transform duration-500 group-hover/card:scale-105" />
+                              )}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                              
+                              <div className="absolute inset-0 bg-black/70 backdrop-blur-xs opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center">
+                                <div className="text-4xl text-gold mb-2">{card.emoji}</div>
+                                <p className="font-display text-lg text-gold mb-2">{card.name}</p>
+                                <p className="text-xs text-white/90 italic leading-relaxed">{card.meaning}</p>
+                                <p className="text-[10px] text-gold/80 mt-2">Click to open full card ✦</p>
+                              </div>
+
+                              <div className="relative z-10 bg-black/60 backdrop-blur-xs border-t border-gold/30 py-2 text-center">
+                                <p className="font-display text-sm tracking-wider text-gold uppercase">{card.name}</p>
+                              </div>
                               <div className="absolute -inset-1 rounded-2xl bg-gold/10 blur-xl -z-10 animate-glow-pulse" />
                             </div>
                           </div>
@@ -242,15 +301,87 @@ function Tarot() {
           </>
         )}
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-12 max-w-3xl mx-auto opacity-70">
-          {cards.map((c, i) => (
-            <div key={i} className="aspect-[2/3] rounded-lg border border-border/85 bg-card/40 flex flex-col items-center justify-center gap-1 text-primary/70 hover:border-primary/60 hover:text-primary transition-colors cursor-default">
-              <span className="text-xl">{c.emoji}</span>
-              <span className="text-[9px] uppercase tracking-wider">{c.name}</span>
-            </div>
-          ))}
+        {/* Tarot Card Garden Grid - Clickable encyclopedia */}
+        <div className="pt-16 space-y-4">
+          <p className="font-script text-2xl text-primary/80">explore the garden</p>
+          <p className="text-xs text-muted-foreground italic max-w-sm mx-auto">Click any card to read its full secrets and view its unique celestial illustration.</p>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-4 max-w-3xl mx-auto">
+            {cards.map((c, i) => (
+              <div
+                key={i}
+                onClick={() => setSelectedCard(c)}
+                className="aspect-[2/3] rounded-lg border border-border/85 bg-card/40 flex flex-col items-center justify-center gap-1 text-primary/75 hover:border-gold/60 hover:text-gold hover:bg-card/75 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-soft"
+              >
+                <span className="text-xl">{c.emoji}</span>
+                <span className="text-[10px] uppercase tracking-wider font-medium">{c.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
+      {/* CARD DETAIL DIALOG MODAL */}
+      {selectedCard && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 md:p-6 animate-fade-in">
+          <div className="bg-[#1c1917] border-2 border-gold/50 rounded-3xl max-w-2xl w-full overflow-hidden shadow-glow grid md:grid-cols-2 animate-scale-up relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedCard(null)}
+              aria-label="close modal"
+              className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-black/60 border border-gold/30 flex items-center justify-center text-gold hover:bg-gold hover:text-black transition-all cursor-pointer"
+            >
+              <X size={16} />
+            </button>
+
+            {/* Left side: Illustration */}
+            <div className="relative aspect-[3/4] md:aspect-auto md:h-full min-h-[300px] overflow-hidden bg-black/40">
+              {selectedCard.image ? (
+                <img
+                  src={selectedCard.image}
+                  alt={selectedCard.name}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-6xl text-gold font-script">
+                  {selectedCard.emoji}
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:hidden" />
+            </div>
+
+            {/* Right side: Explanation */}
+            <div className="p-6 md:p-8 flex flex-col justify-center text-left space-y-6">
+              <div className="space-y-1">
+                <span className="text-3xl text-gold/90">{selectedCard.emoji}</span>
+                <h2 className="font-display text-3xl text-gold tracking-wide uppercase leading-none">
+                  {selectedCard.name}
+                </h2>
+              </div>
+
+              <div className="h-px bg-gold/25" />
+
+              <div className="space-y-4">
+                <p className="font-display italic text-lg text-white/95 leading-relaxed">
+                  "{selectedCard.meaning}"
+                </p>
+                <p className="text-sm text-white/75 leading-relaxed font-light">
+                  {selectedCard.detail}
+                </p>
+              </div>
+
+              <div className="h-px bg-gold/25 pt-2" />
+
+              <button
+                onClick={() => setSelectedCard(null)}
+                className="w-full py-2.5 rounded-full bg-gold text-twilight font-semibold text-sm hover:opacity-90 active:scale-95 transition-all cursor-pointer"
+              >
+                Close & Return to Garden
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
+

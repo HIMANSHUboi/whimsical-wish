@@ -17,6 +17,15 @@ import vanyaPortrait from "@/assets/vanya-portrait.png";
 import vanyaGreenShirt from "@/assets/vanya-green-shirt.png";
 import usRide from "@/assets/us-ride.png";
 
+// New Vanya Photos
+import vanyaLanterns from "@/assets/vanya-lanterns.jpeg";
+import vanyaCave from "@/assets/vanya-cave.jpeg";
+import vanyaBeach from "@/assets/vanya-beach.jpeg";
+import vanyaCastle1 from "@/assets/vanya-castle1.png";
+import vanyaCastle2 from "@/assets/vanya-castle2.png";
+import vanyaStreet from "@/assets/vanya-street.png";
+import vanyaGarden from "@/assets/vanya-garden.png";
+
 export const Route = createFileRoute("/moodboard")({
   head: () => ({
     meta: [
@@ -64,15 +73,22 @@ const seedPins: Pin[] = [
   { kind: "img", src: starSparkle, alt: "Eight-pointed star", tilt: 3, bg: "bg-card", category: "aesthetic" },
   { kind: "tag", text: "✦ lavender skies", tilt: -3, category: "aesthetic" },
   { kind: "img", src: tarotParchment, alt: "Vintage tarot parchment", tilt: -1, tall: true, category: "tarot" },
+  { kind: "img", src: vanyaLanterns, alt: "under the lantern glow ✦", tilt: 2, tall: true, category: "memories" },
   { kind: "img", src: matchaTime, alt: "matcha latte close-up", tilt: 2, category: "matcha" },
+  { kind: "img", src: vanyaCave, alt: "exploring stone caves ✦", tilt: -2, category: "memories" },
   { kind: "quote", text: "tea steeped in silence, hours stretched in gold.", tilt: 2, category: "quotes" },
   { kind: "img", src: matchaCart, alt: "matcha cart spread", tilt: -2, tall: true, category: "matcha" },
+  { kind: "img", src: vanyaBeach, alt: "beach nights under the stars ✦", tilt: 1, tall: true, category: "memories" },
   { kind: "tag", text: "🍵 matcha mornings", tilt: 3, category: "matcha" },
   { kind: "img", src: tarotOrnate, alt: "ornate tarot card", tilt: 1, tall: true, category: "tarot" },
+  { kind: "img", src: vanyaCastle1, alt: "fairytale castle moments ✦", tilt: -3, tall: true, category: "memories" },
   { kind: "quote", text: "may your birthday be soft, slow, and a little bit magic.", tilt: -1, category: "quotes" },
+  { kind: "img", src: vanyaCastle2, alt: "looking back at the castle ✦", tilt: 2, category: "memories" },
   { kind: "tag", text: "✿ dusty pink dreams", tilt: 2, category: "aesthetic" },
   { kind: "img", src: fairyHero, alt: "fairy under stars", tilt: -2, category: "aesthetic" },
+  { kind: "img", src: vanyaStreet, alt: "street lights & quiet nights ✦", tilt: -1, category: "memories" },
   { kind: "tag", text: "☾ tarot at midnight", tilt: -2, category: "tarot" },
+  { kind: "img", src: vanyaGarden, alt: "garden night canopy ✦", tilt: 3, tall: true, category: "memories" },
 ];
 
 const SCRAPBOOK_PAGES = [
@@ -102,6 +118,42 @@ const SCRAPBOOK_PAGES = [
     alt: "Matcha ritual",
     flowers: ["🍃", "🍵", "🌼"],
     tapeTilt: "-2deg",
+  },
+  {
+    title: "Lantern Lights 🏮",
+    subtitle: "A Wish in the Glow",
+    text: "Standing beneath the warm, floating lantern light, looking up at the sky. A quiet moment of holding a wish close to your heart.",
+    img: vanyaLanterns,
+    alt: "Vanya under lanterns",
+    flowers: ["🏮", "✨", "💫"],
+    tapeTilt: "-4deg",
+  },
+  {
+    title: "Chamber of Echoes 🪨",
+    subtitle: "Cave Exploring",
+    text: "Stepping inside the ancient stone paths, where quiet echoes meet the cool, damp breeze. Finding beauty in hidden places.",
+    img: vanyaCave,
+    alt: "Vanya in the cave",
+    flowers: ["🪨", "🌿", "💧"],
+    tapeTilt: "3deg",
+  },
+  {
+    title: "Night on the Shore 🌊",
+    subtitle: "Beachside Magic",
+    text: "Under the deep blue canvas of the night sky, feet in the cold sand, standing back-to-back on the shore. The waves singing their birthday lullaby.",
+    img: vanyaBeach,
+    alt: "Vanya on the beach at night",
+    flowers: ["🌊", "🐚", "🌌"],
+    tapeTilt: "-3deg",
+  },
+  {
+    title: "Fairy-Tale Dreams 🏰",
+    subtitle: "Castle Under Stars",
+    text: "Standing in front of the illuminated fairytale castle, looking back with a soft smile. A princess in her own whimsical adventure.",
+    img: vanyaCastle2,
+    alt: "Vanya at the castle",
+    flowers: ["🏰", "👑", "🌸"],
+    tapeTilt: "4deg",
   },
   {
     title: "Chasing Sunsets 🌅",
