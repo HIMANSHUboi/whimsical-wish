@@ -22,7 +22,7 @@ import { DeviceGreeting } from "@/components/DeviceGreeting";
 
 import appCss from "../styles.css?url";
 
-const BIRTHDAY = new Date("2026-06-16T00:00:00").getTime();
+const BIRTHDAY_IST = new Date("2026-06-16T00:00:00+05:30").getTime();
 const SECRET_PASSCODE = "braydenimissyou";
 // Session-only key — lives only for the current tab, cleared on close/refresh
 const SESSION_KEY = "vanya_preview_session";
@@ -99,10 +99,17 @@ function RootComponent() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const isPastBirthday = Date.now() >= BIRTHDAY;
+    // Check if it's already June 16 (or later) in the visitor's local timezone
+    const now = new Date();
+    const isPastLocalBirthday =
+      now.getFullYear() > 2026 ||
+      (now.getFullYear() === 2026 && now.getMonth() > 5) || // June is 5 (0-indexed)
+      (now.getFullYear() === 2026 && now.getMonth() === 5 && now.getDate() >= 16);
+
+    const isPastAbsoluteBirthday = Date.now() >= BIRTHDAY_IST;
 
     // Only auto-unlock permanently once the birthday has arrived
-    if (isPastBirthday) {
+    if (isPastLocalBirthday || isPastAbsoluteBirthday) {
       setIsUnlocked(true);
       return;
     }

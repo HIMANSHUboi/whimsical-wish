@@ -5,7 +5,7 @@ import lily1 from "@/assets/lily1.png";
 import lily2 from "@/assets/lily2.png";
 
 // Target date: June 16, 2026
-const BIRTHDAY = new Date("2026-06-16T00:00:00").getTime();
+const BIRTHDAY_IST = new Date("2026-06-16T00:00:00+05:30").getTime();
 const SECRET_PASSCODE = "braydenimissyou";
 
 interface TimeLeft {
@@ -17,7 +17,7 @@ interface TimeLeft {
 
 function getTimeLeft(): TimeLeft | null {
   const now = Date.now();
-  const diff = BIRTHDAY - now;
+  const diff = BIRTHDAY_IST - now;
   if (diff <= 0) return null;
   return {
     days: Math.floor(diff / (1000 * 60 * 60 * 24)),
